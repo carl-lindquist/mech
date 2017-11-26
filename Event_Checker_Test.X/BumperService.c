@@ -20,20 +20,28 @@
 #include "ES_Framework.h"
 #include "TapeSensorService.h"
 #include <stdio.h>
+#include "IO_Ports.h"
 
 /*******************************************************************************
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define SERVICE_TIMER_TICKS 10
+#define SERVICE_TIMER_TICKS 3
 
-#define TAPE_THRESH 150
-#define TAPE_SENSOR_1_PIN AD_PORTV3
-#define TAPE_SENSOR_2_PIN AD_PORTV4
-#define TAPE_SENSOR_3_PIN AD_PORTV5
-#define TAPE_SENSOR_4_PIN AD_PORTV6
-#define TAPE_SENSOR_5_PIN AD_PORTV7
-#define NUM_TAPE_SENSORS 5
+#define BUMPER_PORT PORTZ
+#define BUMPER_PIN_0 PIN3
+#define BUMPER_PIN_1 PIN4
+#define BUMPER_PIN_2 PIN5
+#define BUMPER_PIN_3 PIN6
+#define BUMPER_PIN_4 PIN7
+
+#define ALL_BUMPER_PINS (BUMPER_PIN_0 | BUMPER_PIN_1 | BUMPER_PIN_2 | BUMPER_PIN_3 | BUMPER_PIN_4)
+#define NUM_BUMPERS 5
+
+#define BUMPER_DEBOUNCE_PERIOD 20
+#define DEBOUNCE_ARRAY_SIZE (BUMPER_DEBOUNCE_PERIOD + 2)
+#define NEW_INDEX (DEBOUNCE_ARRAY_SIZE - 1)
+#define OLD_INDEX 0
 
 
 /*******************************************************************************
@@ -42,7 +50,7 @@
 /* Prototypes for private functions for this machine. They should be functions
    relevant to the behavior of this state machine */
 
-uint8_t read_tape_sensors(void);
+uint8_t read_bumpers(void);
 
 /*******************************************************************************
  * PRIVATE MODULE VARIABLES                                                    *
@@ -51,15 +59,10 @@ uint8_t read_tape_sensors(void);
  * as well. */
 
 static uint8_t MyPriority;
-static uint8_t old_tape_states;
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
-
-uint8_t get_tape_states(void) {
-    return old_tape_states;
-}
 
 /**
  * @Function InitSimpleBumperService(uint8_t Priority)
@@ -71,15 +74,13 @@ uint8_t get_tape_states(void) {
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTapeSensorService(uint8_t Priority) {
+uint8_t InitBumperService(uint8_t Priority) {
     ES_Event ThisEvent;
 
     MyPriority = Priority;
-
-    AD_AddPins(TAPE_SENSOR_1_PIN | TAPE_SENSOR_2_PIN | TAPE_SENSOR_3_PIN
-             | TAPE_SENSOR_4_PIN | TAPE_SENSOR_5_PIN);
+    IO_PortsSetPortInputs(BUMPER_PORT, ALL_BUMPER_PINS);
     
-    ES_Timer_InitTimer(TAPE_SENSOR_SERVICE_TIMER, SERVICE_TIMER_TICKS);
+    ES_Timer_InitTimer(BUMPER_SERVICE_TIMER, SERVICE_TIMER_TICKS);
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
     if (ES_PostToService(MyPriority, ThisEvent) == TRUE) {
@@ -98,13 +99,10 @@ uint8_t InitTapeSensorService(uint8_t Priority) {
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostTapeSensorService(ES_Event ThisEvent) {
+uint8_t PostBumperService(ES_Event ThisEvent) {
     return ES_PostToService(MyPriority, ThisEvent);
 }
 
-
-static uint8_t lastDataBump = 0;
-static ES_EventTyp_t lastBumpEvent = BUMPER_RELEASED;
 
 /**
  * @Function RunSimpleBumperService(ES_Event ThisEvent)
@@ -115,11 +113,10 @@ static ES_EventTyp_t lastBumpEvent = BUMPER_RELEASED;
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunTapeSensorService(ES_Event ThisEvent) {
-//    static uint8_t states[DEBOUNCE_ARRAY_SIZE];
+ES_Event RunBumperService(ES_Event ThisEvent) {
+static uint8_t states[DEBOUNCE_ARRAY_SIZE];
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
-    uint8_t new_tape_states = read_tape_sensors();
 
     /********************************************
      in here you write your service code
@@ -136,44 +133,42 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
         case ES_TIMERSTOPPED:
             break;
         case ES_TIMEOUT:
-            ES_Timer_InitTimer(TAPE_SENSOR_SERVICE_TIMER, SERVICE_TIMER_TICKS);
+            ES_Timer_InitTimer(BUMPER_SERVICE_TIMER, SERVICE_TIMER_TICKS);
 
-//            states[NEW_INDEX] = Roach_ReadBumpers();
-//            /* Shift your old values back for debouncing, check newer states for equality */
-//            uint8_t eventOccurred = 1;
-//            uint8_t i, j;
-//            for (i = OLD_INDEX, j = OLD_INDEX + 2; i < NEW_INDEX; i++, j++) {
-//                if (j < NEW_INDEX && eventOccurred) {
-//                    if (states[j] != states[j + 1]) { //tests for equality of the newest states
-//                        eventOccurred = 0;
-//                    }
-//                }
-//                states[i] = states[i + 1]; //shift values back, after checking for equality
-//            }
-//            if (states[OLD_INDEX] == states[NEW_INDEX]) {
-//                eventOccurred = 0;
-//            }
+            states[NEW_INDEX] = read_bumpers();
+            /* Shift your old values back for debouncing, check newer states for equality */
+            uint8_t eventOccurred = 1;
+            uint8_t i, j;
+            for (i = OLD_INDEX, j = OLD_INDEX + 2; i < NEW_INDEX; i++, j++) {
+                if (j < NEW_INDEX && eventOccurred) {
+                    if (states[j] != states[j + 1]) { //tests for equality of the newest states
+                        eventOccurred = 0;
+                    }
+                }
+                states[i] = states[i + 1]; //shift values back, after checking for equality
+            }
+            if (states[OLD_INDEX] == states[NEW_INDEX]) {
+                eventOccurred = 0;
+            }
 
-            
-            if (new_tape_states != old_tape_states) {
+            if (eventOccurred) {
                 ES_EventTyp_t currentEventType;
-                //Determines the changes from old tape states to the newest one
-                uint8_t tapeUntrippedEvents = (old_tape_states&(new_tape_states^old_tape_states));
-                uint8_t tapeTrippedEvents = (new_tape_states&(new_tape_states^old_tape_states));
-                if (tapeTrippedEvents) {
-                    currentEventType = TAPE_SENSOR_TRIPPED;
+                //Determines the changes from old bump states to the newest one
+                uint16_t releaseBumpEvents = (states[OLD_INDEX]&(states[NEW_INDEX]^states[OLD_INDEX]));
+                uint16_t pressBumpEvents = (states[NEW_INDEX]&(states[NEW_INDEX]^states[OLD_INDEX]));
+                if (releaseBumpEvents) {
+                    currentEventType = BUMPER_RELEASED;
                 } else {
-                    currentEventType = TAPE_SENSOR_UNTRIPPED;
+                    currentEventType = BUMPER_PRESSED;
                 }
 
-                uint16_t currentEvents = tapeTrippedEvents; // Set low bits
-                currentEvents |= (tapeUntrippedEvents << NUM_TAPE_SENSORS); // Set hi bits
+                uint16_t currentEventParam = pressBumpEvents; // Set low bits
+                currentEventParam |= (releaseBumpEvents << NUM_BUMPERS); // Set hi bits
                 ReturnEvent.EventType = currentEventType;
-                ReturnEvent.EventParam = currentEvents;
-                old_tape_states = new_tape_states;
+                ReturnEvent.EventParam = currentEventParam;
                 
                 
-                #ifdef TAPE_SENSOR_SERVICE_TEST
+                #ifdef BUMPER_SERVICE_TEST
                     printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
                 #else
@@ -191,17 +186,10 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
  * PRIVATE FUNCTIONS                                                           *
  ******************************************************************************/
 
-
-uint8_t read_tape_sensors(void) {
+uint8_t read_bumpers(void) {
     uint8_t states = 0;
-    states |= AD_ReadADPin(TAPE_SENSOR_5_PIN) < TAPE_THRESH;
-    states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_4_PIN) < TAPE_THRESH;
-    states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_3_PIN) < TAPE_THRESH;
-    states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_2_PIN) < TAPE_THRESH;
-    states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_1_PIN) < TAPE_THRESH;
+    states = IO_PortsReadPort(BUMPER_PORT) & ALL_BUMPER_PINS;
+    states = states >> 3; // shift pins to be zero indexed
+    
     return states;
 }

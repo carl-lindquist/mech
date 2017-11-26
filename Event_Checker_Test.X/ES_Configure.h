@@ -86,7 +86,7 @@ static const char *EventNames[] = {
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostTapeSensorService
-#define TIMER1_RESP_FUNC TIMER_UNUSED
+#define TIMER1_RESP_FUNC PostBumperService
 #define TIMER2_RESP_FUNC TIMER_UNUSED
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
@@ -110,6 +110,7 @@ static const char *EventNames[] = {
 // the timer number matches where the timer event will be routed
 
 #define TAPE_SENSOR_SERVICE_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
+#define BUMPER_SERVICE_TIMER 1
 
 
 /****************************************************************************/
@@ -121,7 +122,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 2
+#define NUM_SERVICES 3
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -153,11 +154,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 2
 #if NUM_SERVICES > 2
 // the header file with the public fuction prototypes
-#define SERV_2_HEADER "TestService.h"
+#define SERV_2_HEADER "BumperService.h"
 // the name of the Init function
-#define SERV_2_INIT TestServiceInit
+#define SERV_2_INIT InitBumperService
 // the name of the run function
-#define SERV_2_RUN TestServiceRun
+#define SERV_2_RUN RunBumperService
 // How big should this services Queue be?
 #define SERV_2_QUEUE_SIZE 3
 #endif

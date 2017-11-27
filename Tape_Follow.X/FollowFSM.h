@@ -1,17 +1,22 @@
 /*
- * File: SimpleBumperService.h
+ * File: TemplateFSM.h
  * Author: J. Edward Carryer
  * Modified: Gabriel H Elkaim
  *
+ * Template file to set up a Flat State Machine to work with the Events and Services
+ * Framework (ES_Framework) on the Uno32 for the CMPE-118/L class. Note that this file
+ * will need to be modified to fit your exact needs, and most of the names will have
+ * to be changed to match your code.
  *
  * This is provided as an example and a good place to start.
  *
  * Created on 23/Oct/2011
- * Updated on 13/Nov/2013
+ * Updated on 16/Sep/2013
+ * Modified by MaxL on 8/11/2014
  */
 
-#ifndef TapeSensorService_H  
-#define TapeSensorService_H
+#ifndef FOLLOW_FSM_H  // <- This should be changed to your own guard on both
+#define FOLLOW_FSM_H  //    of these lines
 
 
 /*******************************************************************************
@@ -24,21 +29,11 @@
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
 
-#define TAPE_0_TRIPPED 0x0001
-#define TAPE_1_TRIPPED 0x0002
-#define TAPE_2_TRIPPED 0x0004
-#define TAPE_3_TRIPPED 0x0008
-#define TAPE_4_TRIPPED 0x0010
-
-#define TAPE_0_UNTRIPPED 0x0020
-#define TAPE_1_UNTRIPPED 0x0040
-#define TAPE_2_UNTRIPPED 0x0080
-#define TAPE_3_UNTRIPPED 0x0100
-#define TAPE_4_UNTRIPPED 0x0200
 
 /*******************************************************************************
  * PUBLIC TYPEDEFS                                                             *
  ******************************************************************************/
+
 
 
 /*******************************************************************************
@@ -46,42 +41,42 @@
  ******************************************************************************/
 
 /**
- * Reads the most recent value of the tape sensor states. This does not read the
- * AD Pins directly, and will only return the value last recorded by the tape
- * sensor service. Non-blocking.
- * @return The state of the tape sensors as a uint8_t
- */
-uint8_t get_tape_states(void);
- 
-/**
- * @Function InitTapeService(uint8_t Priority)
+ * @Function InitFollowFSM(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use
  * @return TRUE or FALSE
- * @brief 
+ * @brief This will get called by the framework at the beginning of the code
+ *        execution. It will post an ES_INIT event to the appropriate event
+ *        queue, which will be handled inside RunTemplateFSM function. Remember
+ *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitTapeSensorService(uint8_t Priority);
+uint8_t InitFollowFSM(uint8_t Priority);
 
 /**
- * @Function PostTapeService(ES_Event ThisEvent)
+ * @Function PostFollowFSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be posted to queue
  * @return TRUE or FALSE
- * @brief 
+ * @brief This function is a wrapper to the queue posting function, and its name
+ *        will be used inside ES_Configure to point to which queue events should
+ *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostTapeSensorService(ES_Event ThisEvent);
+uint8_t PostFollowFSM(ES_Event ThisEvent);
+
 
 /**
- * @Function RunTapeService(ES_Event ThisEvent)
+ * @Function RunFollowFSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
- * @brief This function is where you implement the whole of the service,
- *        as this is called any time a new event is passed to the event queue.
+ * @brief This function is where you implement the whole of the flat state machine,
+ *        as this is called any time a new event is passed to the event queue. This
+ *        function will be called recursively to implement the correct order for a
+ *        state transition to be: exit current state -> enter next state using the
+ *        ES_EXIT and ES_ENTRY events.
+ * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunTapeSensorService(ES_Event ThisEvent);
+ES_Event RunFollowFSM(ES_Event ThisEvent);
 
-
-
-#endif /* TapeSensorService_H */
+#endif /* FOLLOW_FSM_H */
 

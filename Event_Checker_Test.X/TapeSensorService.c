@@ -103,8 +103,6 @@ uint8_t PostTapeSensorService(ES_Event ThisEvent) {
 }
 
 
-static uint8_t lastDataBump = 0;
-static ES_EventTyp_t lastBumpEvent = BUMPER_RELEASED;
 
 /**
  * @Function RunSimpleBumperService(ES_Event ThisEvent)
@@ -177,7 +175,8 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
                     printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
                 #else
-                    PostSomewhere();
+//                    PostTapeSensorService(ReturnEvent);
+                    ES_PostList00(ReturnEvent);
                 #endif
             }
             break;    

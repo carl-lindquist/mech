@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/IO_Ports.c C:/CMPE118/src/pwm.c C:/CMPE118/src/RC_Servo.c C:/CMPE118/motion.c
+SOURCEFILES_QUOTED_IF_SPACED=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/IO_Ports.c C:/CMPE118/src/pwm.c C:/CMPE118/src/RC_Servo.c Motion.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/RC_Servo.o ${OBJECTDIR}/_ext/1080977421/motion.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/331920610/AD.o.d ${OBJECTDIR}/_ext/331920610/BOARD.o.d ${OBJECTDIR}/_ext/331920610/serial.o.d ${OBJECTDIR}/_ext/331920610/IO_Ports.o.d ${OBJECTDIR}/_ext/331920610/pwm.o.d ${OBJECTDIR}/_ext/331920610/RC_Servo.o.d ${OBJECTDIR}/_ext/1080977421/motion.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/RC_Servo.o ${OBJECTDIR}/Motion.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/331920610/AD.o.d ${OBJECTDIR}/_ext/331920610/BOARD.o.d ${OBJECTDIR}/_ext/331920610/serial.o.d ${OBJECTDIR}/_ext/331920610/IO_Ports.o.d ${OBJECTDIR}/_ext/331920610/pwm.o.d ${OBJECTDIR}/_ext/331920610/RC_Servo.o.d ${OBJECTDIR}/Motion.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/RC_Servo.o ${OBJECTDIR}/_ext/1080977421/motion.o
+OBJECTFILES=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/RC_Servo.o ${OBJECTDIR}/Motion.o
 
 # Source Files
-SOURCEFILES=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/IO_Ports.c C:/CMPE118/src/pwm.c C:/CMPE118/src/RC_Servo.c C:/CMPE118/motion.c
+SOURCEFILES=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/IO_Ports.c C:/CMPE118/src/pwm.c C:/CMPE118/src/RC_Servo.c Motion.c
 
 
 CFLAGS=
@@ -142,11 +142,11 @@ ${OBJECTDIR}/_ext/331920610/RC_Servo.o: C:/CMPE118/src/RC_Servo.c  nbproject/Mak
 	@${RM} ${OBJECTDIR}/_ext/331920610/RC_Servo.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/331920610/RC_Servo.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DMOTION_TEST_HARNESS -I"." -I"C:/CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/331920610/RC_Servo.o.d" -o ${OBJECTDIR}/_ext/331920610/RC_Servo.o C:/CMPE118/src/RC_Servo.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/_ext/1080977421/motion.o: C:/CMPE118/motion.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/1080977421" 
-	@${RM} ${OBJECTDIR}/_ext/1080977421/motion.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1080977421/motion.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1080977421/motion.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DMOTION_TEST_HARNESS -I"." -I"C:/CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/1080977421/motion.o.d" -o ${OBJECTDIR}/_ext/1080977421/motion.o C:/CMPE118/motion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+${OBJECTDIR}/Motion.o: Motion.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Motion.o.d 
+	@${RM} ${OBJECTDIR}/Motion.o 
+	@${FIXDEPS} "${OBJECTDIR}/Motion.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DMOTION_TEST_HARNESS -I"." -I"C:/CMPE118/include" -MMD -MF "${OBJECTDIR}/Motion.o.d" -o ${OBJECTDIR}/Motion.o Motion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 else
 ${OBJECTDIR}/_ext/331920610/AD.o: C:/CMPE118/src/AD.c  nbproject/Makefile-${CND_CONF}.mk
@@ -185,11 +185,11 @@ ${OBJECTDIR}/_ext/331920610/RC_Servo.o: C:/CMPE118/src/RC_Servo.c  nbproject/Mak
 	@${RM} ${OBJECTDIR}/_ext/331920610/RC_Servo.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/331920610/RC_Servo.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DMOTION_TEST_HARNESS -I"." -I"C:/CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/331920610/RC_Servo.o.d" -o ${OBJECTDIR}/_ext/331920610/RC_Servo.o C:/CMPE118/src/RC_Servo.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/_ext/1080977421/motion.o: C:/CMPE118/motion.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}/_ext/1080977421" 
-	@${RM} ${OBJECTDIR}/_ext/1080977421/motion.o.d 
-	@${RM} ${OBJECTDIR}/_ext/1080977421/motion.o 
-	@${FIXDEPS} "${OBJECTDIR}/_ext/1080977421/motion.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DMOTION_TEST_HARNESS -I"." -I"C:/CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/1080977421/motion.o.d" -o ${OBJECTDIR}/_ext/1080977421/motion.o C:/CMPE118/motion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+${OBJECTDIR}/Motion.o: Motion.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Motion.o.d 
+	@${RM} ${OBJECTDIR}/Motion.o 
+	@${FIXDEPS} "${OBJECTDIR}/Motion.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DMOTION_TEST_HARNESS -I"." -I"C:/CMPE118/include" -MMD -MF "${OBJECTDIR}/Motion.o.d" -o ${OBJECTDIR}/Motion.o Motion.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 endif
 

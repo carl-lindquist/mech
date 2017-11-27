@@ -26,7 +26,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define SERVICE_TIMER_TICKS 3
+#define SERVICE_TIMER_TICKS 100
 
 #define BUMPER_PORT PORTZ
 #define BUMPER_PIN_0 PIN3
@@ -38,7 +38,7 @@
 #define ALL_BUMPER_PINS (BUMPER_PIN_0 | BUMPER_PIN_1 | BUMPER_PIN_2 | BUMPER_PIN_3 | BUMPER_PIN_4)
 #define NUM_BUMPERS 5
 
-#define BUMPER_DEBOUNCE_PERIOD 20
+#define BUMPER_DEBOUNCE_PERIOD 1
 #define DEBOUNCE_ARRAY_SIZE (BUMPER_DEBOUNCE_PERIOD + 2)
 #define NEW_INDEX (DEBOUNCE_ARRAY_SIZE - 1)
 #define OLD_INDEX 0

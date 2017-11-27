@@ -25,7 +25,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define SERVICE_TIMER_TICKS 10
+#define SERVICE_TIMER_TICKS 30
 
 #define TAPE_THRESH 150
 #define TAPE_SENSOR_1_PIN AD_PORTV3

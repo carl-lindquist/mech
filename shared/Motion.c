@@ -9,12 +9,16 @@
 
 void motion_init(void) {
     PWM_Init();
-    RC_Init();
     PWM_AddPins(LEFT_MOTOR_EN_PIN);
     PWM_AddPins(RIGHT_MOTOR_EN_PIN);
+    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 0);
+    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 0);
+    
+    RC_Init();
     RC_AddPins(RC_PORTX03);
     RC_AddPins(RC_PORTX04);
     RC_AddPins(RC_PORTV04);
+    
     IO_PortsSetPortOutputs(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
     IO_PortsSetPortOutputs(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
 }
@@ -24,11 +28,12 @@ void motion_move(uint8_t dir, uint8_t speed) {
         speed = 100;
     }
     if (dir == FORWARD) {
-        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-    } else {
         IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
         IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+    } else {
+        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+        
     }
     PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, speed * 10);
     PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, speed * 10);
@@ -54,49 +59,53 @@ void motion_tank_right() {
 
 void motion_bank_left(uint8_t dir) {
     if (dir == FORWARD) {
-        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-    } else {
         IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
         IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+    } else {
+        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+        
     }
-    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 500);
-    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 1000);
+    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 600);
+    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 700);
 }
 
 void motion_bank_right(uint8_t dir) {
     if (dir == FORWARD) {
-        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-    } else {
         IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
         IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+    } else {
+        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+        
     }
-    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 1000);
-    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 500);
+    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 700);
+    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 600);
 }
 
 void motion_pivot_left(uint8_t dir) {
     if (dir == FORWARD) {
-        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-    } else {
         IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
         IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+    } else {
+        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+        
     }
     PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 0);
-    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 1000);
+    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 600);
 }
 
 void motion_pivot_right(uint8_t dir) {
     if (dir == FORWARD) {
-        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-    } else {
         IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
         IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+    } else {
+        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+        
     }
-    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 1000);
+    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 600);
     PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 0);
 }
 

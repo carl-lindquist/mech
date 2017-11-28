@@ -32,9 +32,11 @@
 #include "ES_Framework.h"
 
 #include "FollowFSM.h"
-#include "TapeSensorService.h"
 #include <BOARD.h>
 #include <stdio.h>
+
+#include "TapeSensorService.h"
+#include "Motion.h"
 
 
 /*******************************************************************************
@@ -142,6 +144,7 @@ ES_Event RunFollowFSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
+//            motion_init();
 
             // now put the machine into the actual initial state
             nextState = Forward;
@@ -152,50 +155,40 @@ ES_Event RunFollowFSM(ES_Event ThisEvent)
 
     case Forward: // in the first state, replace this with appropriate state
         switch (ThisEvent.EventType) {
-            
             case ES_ENTRY:
-                printf("Entered Forward\r\n");
+                motion_move(FORWARD,60);
                 break;
             case TAPE_SENSOR_TRIPPED:
-                printf("Something tapish happened\r\n");
-                if (ThisEvent.EventParam & TAPE_0_TRIPPED) {
-                    nextState = BankRight;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
+                nextState = BankRight;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
         
     case BankRight: // in the first state, replace this with appropriate state
         switch (ThisEvent.EventType) {
             case ES_ENTRY:
-                printf("Entered Bank Right\r\n");
+                motion_pivot_right(FORWARD);
                 break;
             case TAPE_SENSOR_UNTRIPPED:
-                if (ThisEvent.EventParam & TAPE_0_UNTRIPPED) {
-                    nextState = BankLeft;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
+                nextState = BankLeft;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
         
-    case BankLeft: // in the first state, replace this with appropriate state
+        case BankLeft: // in the first state, replace this with appropriate state
         switch (ThisEvent.EventType) {
             case ES_ENTRY:
-                printf("Entered Bank Left\r\n");
+                motion_pivot_left(FORWARD);
                 break;
             case TAPE_SENSOR_TRIPPED:
-                if (ThisEvent.EventParam & TAPE_0_TRIPPED) {
-                    nextState = BankRight;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
+                nextState = BankRight;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
         }
         break;
+        
 
     default: // all unhandled states fall into here
         break;

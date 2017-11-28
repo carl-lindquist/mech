@@ -4,6 +4,8 @@
 #include "ES_Configure.h"
 #include "ES_Framework.h"
 
+#include "Motion.h"
+
 
 
 void main(void)
@@ -12,6 +14,7 @@ void main(void)
 
     BOARD_Init();
     AD_Init();
+    motion_init();
 
     printf("Starting ES Framework Template\r\n");
     printf("using the 2nd Generation Events & Services Framework\r\n");

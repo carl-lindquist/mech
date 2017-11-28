@@ -14,8 +14,11 @@
 
 #ifndef CONFIGURE_H
 #define CONFIGURE_H
-
-
+//
+//#ifndef FALSE
+//#define TRUE ((int8_t) 1)
+//#define FALSE ((int8_t) 0)
+//#endif
 
 //defines for keyboard input
 //#define USE_KEYBOARD_INPUT
@@ -34,7 +37,8 @@
 
 /****************************************************************************/
 typedef enum {
-    ES_NO_EVENT, ES_ERROR, /* used to indicate an error from the service */
+    ES_NO_EVENT,
+    ES_ERROR, /* used to indicate an error from the service */
     ES_INIT, /* used to transition from initial pseudo-state */
     ES_ENTRY, /* used to enter a state*/
     ES_EXIT, /* used to exit a state*/
@@ -68,7 +72,7 @@ static const char *EventNames[] = {
 
 /****************************************************************************/
 // This are the name of the Event checking function header file.
-#define EVENT_CHECK_HEADER "UserEventCheckers.h"
+#define EVENT_CHECK_HEADER "ES_Configure.h" //"UserEventCheckers.h"
 
 /****************************************************************************/
 // This is the list of event checking functions
@@ -234,9 +238,9 @@ static const char *EventNames[] = {
 // These are the definitions for the Distribution lists. Each definition
 // should be a comma seperated list of post functions to indicate which
 // services are on that distribution list.
-#define NUM_DIST_LISTS 1
+#define NUM_DIST_LISTS 0
 #if NUM_DIST_LISTS > 0 
-#define DIST_LIST0 PostFollowFSM,
+#define DIST_LIST0 PostFollowFSM
 #endif
 #if NUM_DIST_LISTS > 1 
 #define DIST_LIST1 PostTemplateFSM

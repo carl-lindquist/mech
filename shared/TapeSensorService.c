@@ -27,6 +27,11 @@
 
 #define SERVICE_TIMER_TICKS 30
 
+#define DEBOUNCE_PERIOD 1
+#define DEBOUNCE_ARRAY_SIZE (DEBOUNCE_PERIOD + 2)
+#define NEW_INDEX (DEBOUNCE_ARRAY_SIZE - 1)
+#define OLD_INDEX 0
+
 #define TAPE_THRESH 150
 #define TAPE_SENSOR_1_PIN AD_PORTV3
 #define TAPE_SENSOR_2_PIN AD_PORTV4
@@ -52,6 +57,8 @@ uint8_t read_tape_sensors(void);
 
 static uint8_t MyPriority;
 static uint8_t old_tape_states;
+static uint8_t old_event_type;
+static uint8_t states[DEBOUNCE_ARRAY_SIZE];
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
@@ -77,8 +84,9 @@ uint8_t InitTapeSensorService(uint8_t Priority) {
     MyPriority = Priority;
 
     AD_AddPins(TAPE_SENSOR_1_PIN | TAPE_SENSOR_2_PIN | TAPE_SENSOR_3_PIN
-             | TAPE_SENSOR_4_PIN | TAPE_SENSOR_5_PIN);
-    
+            | TAPE_SENSOR_4_PIN | TAPE_SENSOR_5_PIN);
+
+    old_event_type = TAPE_SENSOR_TRIPPED;
     ES_Timer_InitTimer(TAPE_SENSOR_SERVICE_TIMER, SERVICE_TIMER_TICKS);
     // post the initial transition event
     ThisEvent.EventType = ES_INIT;
@@ -102,8 +110,6 @@ uint8_t PostTapeSensorService(ES_Event ThisEvent) {
     return ES_PostToService(MyPriority, ThisEvent);
 }
 
-
-
 /**
  * @Function RunSimpleBumperService(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
@@ -114,7 +120,7 @@ uint8_t PostTapeSensorService(ES_Event ThisEvent) {
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
 ES_Event RunTapeSensorService(ES_Event ThisEvent) {
-//    static uint8_t states[DEBOUNCE_ARRAY_SIZE];
+    //    static uint8_t states[DEBOUNCE_ARRAY_SIZE];
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
     uint8_t new_tape_states = read_tape_sensors();
@@ -136,50 +142,89 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
         case ES_TIMEOUT:
             ES_Timer_InitTimer(TAPE_SENSOR_SERVICE_TIMER, SERVICE_TIMER_TICKS);
 
-//            states[NEW_INDEX] = Roach_ReadBumpers();
-//            /* Shift your old values back for debouncing, check newer states for equality */
-//            uint8_t eventOccurred = 1;
-//            uint8_t i, j;
-//            for (i = OLD_INDEX, j = OLD_INDEX + 2; i < NEW_INDEX; i++, j++) {
-//                if (j < NEW_INDEX && eventOccurred) {
-//                    if (states[j] != states[j + 1]) { //tests for equality of the newest states
-//                        eventOccurred = 0;
-//                    }
-//                }
-//                states[i] = states[i + 1]; //shift values back, after checking for equality
-//            }
-//            if (states[OLD_INDEX] == states[NEW_INDEX]) {
-//                eventOccurred = 0;
-//            }
-
+            states[NEW_INDEX] = read_tape_sensors();
+            /* Shift your old values back for debouncing, check newer states for equality */
+            uint8_t eventOccurred = 1;
+            uint8_t i, j;
+            for (i = OLD_INDEX, j = OLD_INDEX + 2; i < NEW_INDEX; i++, j++) {
+                if (j < NEW_INDEX && eventOccurred) {
+                    if (states[j] != states[j + 1]) { //tests for equality of the newest states
+                        eventOccurred = 0;
+                    }
+                }
+                states[i] = states[i + 1]; //shift values back, after checking for equality
+            }
+            if (states[OLD_INDEX] == states[NEW_INDEX]) {
+                eventOccurred = 0;
+            }
             
-            if (new_tape_states != old_tape_states) {
-                ES_EventTyp_t currentEventType;
-                //Determines the changes from old tape states to the newest one
-                uint8_t tapeUntrippedEvents = (old_tape_states&(new_tape_states^old_tape_states));
-                uint8_t tapeTrippedEvents = (new_tape_states&(new_tape_states^old_tape_states));
-                if (tapeTrippedEvents) {
-                    currentEventType = TAPE_SENSOR_TRIPPED;
+            if (eventOccurred) {
+                ES_EventTyp_t current_event;
+                //Determines the changes from old bump states to the newest one
+                uint8_t tape_trip_events = (states[OLD_INDEX]&(states[NEW_INDEX]^states[OLD_INDEX]));
+                uint8_t tape_untrip_events = (states[NEW_INDEX]&(states[NEW_INDEX]^states[OLD_INDEX]));
+                if (tape_trip_events) {
+                    current_event = TAPE_SENSOR_TRIPPED;
                 } else {
-                    currentEventType = TAPE_SENSOR_UNTRIPPED;
+                    current_event = TAPE_SENSOR_UNTRIPPED;
                 }
 
-                uint16_t currentEvents = tapeTrippedEvents; // Set low bits
-                currentEvents |= (tapeUntrippedEvents << NUM_TAPE_SENSORS); // Set hi bits
-                ReturnEvent.EventType = currentEventType;
-                ReturnEvent.EventParam = currentEvents;
-                old_tape_states = new_tape_states;
-                
-                
-                #ifdef TAPE_SENSOR_SERVICE_TEST
-                    printf("\r\nEvent: %s\tParam: 0x%X",
+                uint8_t current_param = tape_trip_events; // Set low bits
+                current_param = current_param | (tape_untrip_events << NUM_TAPE_SENSORS); // Set hi bits
+                ReturnEvent.EventType = current_event;
+//                printf("Just Set: %s\r\n",EventNames[ReturnEvent.EventType]);
+                ReturnEvent.EventParam = current_param;
+            
+            
+            
+            
+            
+//            //Determines the changes from old tape states to the newest one
+//            uint8_t tapeUntrippedEvents = (old_tape_states & (new_tape_states^old_tape_states));
+//            uint8_t tapeTrippedEvents = (new_tape_states & (new_tape_states^old_tape_states));
+//            ES_EventTyp_t current_event_type;
+//            if (tapeTrippedEvents) {
+//                current_event_type = TAPE_SENSOR_TRIPPED;
+//            } else {
+//                current_event_type = TAPE_SENSOR_UNTRIPPED;
+//            }
+//            if (current_event_type != old_event_type) {
+//                uint16_t currentEvents = tapeTrippedEvents; // Set low bits
+//                currentEvents |= (tapeUntrippedEvents << NUM_TAPE_SENSORS); // Set hi bits
+//                ReturnEvent.EventType = current_event_type;
+//                ReturnEvent.EventParam = currentEvents;
+//                old_tape_states = new_tape_states;
+//                old_event_type = current_event_type;
+
+                //            if (new_tape_states != old_tape_states) {
+                //                ES_EventTyp_t currentEventType;
+                //                //Determines the changes from old tape states to the newest one
+                //                uint8_t tapeUntrippedEvents = (old_tape_states & (new_tape_states^old_tape_states));
+                //                uint8_t tapeTrippedEvents = (new_tape_states & (new_tape_states^old_tape_states));
+                //                if (tapeTrippedEvents) {
+                //                    currentEventType = TAPE_SENSOR_TRIPPED;
+                //                } else {
+                //                    currentEventType = TAPE_SENSOR_UNTRIPPED;
+                //                }
+                //
+                //                uint16_t currentEvents = tapeTrippedEvents; // Set low bits
+                //                currentEvents |= (tapeUntrippedEvents << NUM_TAPE_SENSORS); // Set hi bits
+                //                ReturnEvent.EventType = currentEventType;
+                //                ReturnEvent.EventParam = currentEvents;
+                //                old_tape_states = new_tape_states;
+
+
+
+#ifdef TAPE_SENSOR_SERVICE_TEST
+                printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
-                #else
-//                    PostTapeSensorService(ReturnEvent);
-                    ES_PostList00(ReturnEvent);
-                #endif
+#else
+                //                    PostTapeSensorService(ReturnEvent);
+                //                    ES_PostList00(ReturnEvent);
+                PostFollowFSM(ReturnEvent);
+#endif
             }
-            break;    
+            break;
         default:
             break;
     }
@@ -193,14 +238,14 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
 
 uint8_t read_tape_sensors(void) {
     uint8_t states = 0;
-    states |= AD_ReadADPin(TAPE_SENSOR_5_PIN) < TAPE_THRESH;
+    states |= AD_ReadADPin(TAPE_SENSOR_5_PIN) > TAPE_THRESH;
     states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_4_PIN) < TAPE_THRESH;
+    states |= AD_ReadADPin(TAPE_SENSOR_4_PIN) > TAPE_THRESH;
     states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_3_PIN) < TAPE_THRESH;
+    states |= AD_ReadADPin(TAPE_SENSOR_3_PIN) > TAPE_THRESH;
     states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_2_PIN) < TAPE_THRESH;
+    states |= AD_ReadADPin(TAPE_SENSOR_2_PIN) > TAPE_THRESH;
     states = states << 1;
-    states |= AD_ReadADPin(TAPE_SENSOR_1_PIN) < TAPE_THRESH;
+    states |= AD_ReadADPin(TAPE_SENSOR_1_PIN) > TAPE_THRESH;
     return states;
 }

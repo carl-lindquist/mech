@@ -5,7 +5,14 @@
 #include "RC_Servo.h"
 #include "IO_Ports.h"
 
-//#define MOTION_TEST_HARNESS
+#define LEFT_MOTOR_EN_PIN PWM_PORTY12
+#define RIGHT_MOTOR_EN_PIN PWM_PORTY10
+
+#define LEFT_MOTOR_DIR_PIN PIN11
+#define RIGHT_MOTOR_DIR_PIN PIN9
+#define MOTOR_PORT PORTY
+#define BEEFY_PORT 
+
 
 void motion_init(void) {
     PWM_Init();
@@ -138,6 +145,8 @@ void delay(void) {
     for (i = 0; i < 1000000; i++);
 }
 
+
+//#define MOTION_TEST_HARNESS
 #ifdef MOTION_TEST_HARNESS
 
 void main(void) {

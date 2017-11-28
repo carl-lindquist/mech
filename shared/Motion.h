@@ -4,13 +4,7 @@
 #include "BOARD.h"
 #define FORWARD 1
 #define REVERSE 0
-#define LEFT_MOTOR_EN_PIN PWM_PORTY04
-#define RIGHT_MOTOR_EN_PIN PWM_PORTY10
 
-#define LEFT_MOTOR_DIR_PIN PIN3
-#define RIGHT_MOTOR_DIR_PIN PIN9
-#define MOTOR_PORT PORTY
-#define BEEFY_PORT 
 
 
 void motion_init();

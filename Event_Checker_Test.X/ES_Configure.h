@@ -48,6 +48,9 @@ typedef enum {
     BUMPER_RELEASED,
     TAPE_SENSOR_TRIPPED,
     TAPE_SENSOR_UNTRIPPED,
+    TRACKWIRE_FOUND,
+    TRACKWIRE_ALIGNED,
+    TRACKWIRE_LOST,
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
@@ -66,10 +69,11 @@ static const char *EventNames[] = {
 	"BUMPER_RELEASED",
 	"TAPE_SENSOR_TRIPPED",
 	"TAPE_SENSOR_UNTRIPPED",
+	"TRACKWIRE_FOUND",
+	"TRACKWIRE_ALIGNED",
+	"TRACKWIRE_LOST",
 	"NUMBEROFEVENTS",
 };
-
-
 
 
 /****************************************************************************/
@@ -87,7 +91,7 @@ static const char *EventNames[] = {
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostTapeSensorService
 #define TIMER1_RESP_FUNC PostBumperService
-#define TIMER2_RESP_FUNC TIMER_UNUSED
+#define TIMER2_RESP_FUNC PostTrackwireService
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
@@ -111,6 +115,7 @@ static const char *EventNames[] = {
 
 #define TAPE_SENSOR_SERVICE_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
 #define BUMPER_SERVICE_TIMER 1
+#define TRACKWIRE_SERVICE_TIMER 2
 
 
 /****************************************************************************/
@@ -122,7 +127,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 3
+#define NUM_SERVICES 4
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -169,11 +174,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 3
 #if NUM_SERVICES > 3
 // the header file with the public fuction prototypes
-#define SERV_3_HEADER "TestService.h"
+#define SERV_3_HEADER "TrackwireService.h"
 // the name of the Init function
-#define SERV_3_INIT TestServiceInit
+#define SERV_3_INIT InitTrackwireService
 // the name of the run function
-#define SERV_3_RUN TestServiceRun
+#define SERV_3_RUN RunTrackwireService
 // How big should this services Queue be?
 #define SERV_3_QUEUE_SIZE 3
 #endif

@@ -61,21 +61,19 @@
 typedef enum {
     InitPState,
     Forward,
-    Corner,
-    AlignTape,
+            Reverse,
+    Align,
     PivotLeft,
     PivotRight,
-            TankRight,
 } FollowFSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
 	"Forward",
-	"Corner",
-	"AlignTape",
+	"Reverse",
+	"Align",
 	"PivotLeft",
 	"PivotRight",
-	"TankRight",
 };
 
 
@@ -97,8 +95,7 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitFollowFSM(uint8_t Priority)
-{
+uint8_t InitFollowFSM(uint8_t Priority) {
     MyPriority = Priority;
     // put us into the Initial PseudoState
     CurrentState = InitPState;
@@ -119,8 +116,7 @@ uint8_t InitFollowFSM(uint8_t Priority)
  *        be posted to. Remember to rename to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostFollowFSM(ES_Event ThisEvent)
-{
+uint8_t PostFollowFSM(ES_Event ThisEvent) {
     return ES_PostToService(MyPriority, ThisEvent);
 }
 
@@ -136,119 +132,117 @@ uint8_t PostFollowFSM(ES_Event ThisEvent)
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed."
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunFollowFSM(ES_Event ThisEvent)
-{
+ES_Event RunFollowFSM(ES_Event ThisEvent) {
     uint8_t makeTransition = FALSE; // use to flag transition
     FollowFSMState_t nextState; // <- need to change enum type here
 
     ES_Tattle(); // trace call stack
 
     switch (CurrentState) {
-    case InitPState: // If current state is initial Psedudo State
-        if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
-        {
-            // this is where you would put any actions associated with the
-            // transition from the initial pseudo-state into the actual
-            // initial state
+        case InitPState: // If current state is initial Psedudo State
+            if (ThisEvent.EventType == ES_INIT)// only respond to ES_Init
+            {
+                // this is where you would put any actions associated with the
+                // transition from the initial pseudo-state into the actual
+                // initial state
 
-            // now put the machine into the actual initial state
-            nextState = Forward;
-            makeTransition = TRUE;
-            ThisEvent.EventType = ES_NO_EVENT;
-        }
-        break;
+                // now put the machine into the actual initial state
+                nextState = Forward;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
+            }
+            break;
 
-    case Forward: // in the first state, replace this with appropriate state
-        switch (ThisEvent.EventType) {
-            case ES_ENTRY:
-                motion_move(FORWARD, 60);
-                break;
-            case TAPE_SENSOR_TRIPPED:
-                if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+        case Forward: // in the first state, replace this with appropriate state
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(FORWARD, 60);
+                    break;
+                case TAPE_SENSOR_TRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                        nextState = Reverse;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    } 
+                    break;
+            }
+            break;
+            
+         case Reverse: // in the first state, replace this with appropriate state
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(REVERSE, 60);
+                    break;
+                case TAPE_SENSOR_UNTRIPPED:
+                    if (ThisEvent.EventParam & (TAPE_0_UNTRIPPED | TAPE_1_UNTRIPPED | TAPE_2_UNTRIPPED)) {
+                        if (get_tape_states() & TAPE_3) {
+                            nextState = PivotRight;
+                        } else {
+                            nextState = Align;
+                        }
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    } 
+                    break;
+            }
+            break;
+
+        case PivotRight: // in the first state, replace this with appropriate state
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_pivot_right(FORWARD);
+                    break;
+                case TAPE_SENSOR_UNTRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
+                        nextState = PivotLeft;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+            }
+            break;
+
+        case PivotLeft: // in the first state, replace this with appropriate state
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_pivot_left(FORWARD);
+                    break;
+                case TAPE_SENSOR_TRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                        nextState = PivotRight;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+            }
+            break;
+            
+        case Align: // in the first state, replace this with appropriate state
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_tank_right();
+                    break;
+                case TAPE_SENSOR_TRIPPED:
+                    if (ThisEvent.EventParam & TAPE_3_TRIPPED) {
+                        nextState = PivotLeft;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
                     
-                    nextState = PivotRight;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
-        }
-        break;
-        
-    case AlignTape: // in the first state, replace this with appropriate state
-        switch (ThisEvent.EventType) {
-            case ES_ENTRY:
-                motion_pivot_right(FORWARD);
-                break;
-            case TAPE_SENSOR_UNTRIPPED:
-                if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                    nextState = PivotLeft;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
-        }
-        break;
-        
-    case Corner: // in the first state, replace this with appropriate state
-        switch (ThisEvent.EventType) {
-            case ES_ENTRY:
-                motion_tank_right();
-                break;
-            case TAPE_SENSOR_UNTRIPPED:
-                if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                    nextState = PivotLeft;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
-        }
-        break;
-        
-    case PivotRight: // in the first state, replace this with appropriate state
-        switch (ThisEvent.EventType) {
-            case ES_ENTRY:
-                motion_pivot_right(FORWARD);
-                break;
-            case TAPE_SENSOR_UNTRIPPED:
-                if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                    nextState = PivotLeft;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
-                break;
-//            case TAPE_SENSOR_TRIPPED:
-//                if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-//                    nextState = Corner;
-//                    makeTransition = TRUE;
-//                    ThisEvent.EventType = ES_NO_EVENT;
-//                }
-                break;
-        }
-        break;
-        
-    case PivotLeft: // in the first state, replace this with appropriate state
-        switch (ThisEvent.EventType) {
-            case ES_ENTRY:
-                motion_pivot_left(FORWARD);
-                break;
-            case TAPE_SENSOR_TRIPPED:
-                if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
-                    nextState = PivotRight;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    
-                } //else if(ThisEvent.EventParam & TAPE_2_TRIPPED) {
-//                    nextState = Corner;
-//                    makeTransition = TRUE;
-//                    ThisEvent.EventType = ES_NO_EVENT;
-//                }
-                break;
-        }
-        break;
-        
+                case TAPE_SENSOR_UNTRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
+                        nextState = PivotLeft;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+            }
+            break;
 
-    default: // all unhandled states fall into here
-        break;
+
+        default: // all unhandled states fall into here
+            break;
     } // end switch on Current State
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event

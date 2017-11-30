@@ -32,7 +32,7 @@
 #define NEW_INDEX (DEBOUNCE_ARRAY_SIZE - 1)
 #define OLD_INDEX 0
 
-#define TAPE_THRESH 120
+#define TAPE_THRESH 150
 #define TAPE_SENSOR_1_PIN AD_PORTV3
 #define TAPE_SENSOR_2_PIN AD_PORTV4
 #define TAPE_SENSOR_3_PIN AD_PORTV5
@@ -170,7 +170,7 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
                     current_event = TAPE_SENSOR_UNTRIPPED;
                 }
 
-                uint8_t current_param = tape_trip_events; // Set low bits
+                uint16_t current_param = tape_trip_events; // Set low bits
                 current_param = current_param | (tape_untrip_events << NUM_TAPE_SENSORS); // Set hi bits
                 ReturnEvent.EventType = current_event;
 //                printf("Just Set: %s\r\n",EventNames[ReturnEvent.EventType]);

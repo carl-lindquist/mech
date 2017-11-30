@@ -17,7 +17,7 @@
 #define MOTOR_PORT PORTY
 #define BEEFY_PORT 
 
-#define MIN_SPEED 60
+#define MIN_SPEED 59
 
 
 //---------- Private Prototypes ----------//
@@ -80,14 +80,14 @@ void motion_bank_left(uint8_t dir) {
     set_motor_direction(RIGHT_MOTOR, dir);
      
     set_motor_speed(LEFT_MOTOR, MIN_SPEED);
-    set_motor_speed(RIGHT_MOTOR, 70);
+    set_motor_speed(RIGHT_MOTOR, 90);
 }
 
 void motion_bank_right(uint8_t dir) {
     set_motor_direction(LEFT_MOTOR, dir);
     set_motor_direction(RIGHT_MOTOR, dir);
         
-    set_motor_speed(LEFT_MOTOR, 70);
+    set_motor_speed(LEFT_MOTOR, 100);
     set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
 }
 

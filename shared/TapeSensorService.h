@@ -24,11 +24,15 @@
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
 
+//----- State Bitmasks -----//
+
 #define TAPE_0 0x01
 #define TAPE_1 0x02
 #define TAPE_2 0x04
 #define TAPE_3 0x08
 #define TAPE_4 0x10
+
+//----- Event Bitmasks -----//
 
 #define TAPE_0_TRIPPED 0x0001
 #define TAPE_1_TRIPPED 0x0002

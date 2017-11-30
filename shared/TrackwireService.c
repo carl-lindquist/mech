@@ -158,9 +158,7 @@ ES_Event RunTrackwireService(ES_Event ThisEvent) {
                 printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
 #else
-                //                    PostTapeSensorService(ReturnEvent);
-                //                    ES_PostList00(ReturnEvent);
-                PostFollowFSM(ReturnEvent);
+                ES_PostList00(ReturnEvent);
 #endif
             }
             break;

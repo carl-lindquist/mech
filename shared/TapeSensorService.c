@@ -174,54 +174,13 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
                 ReturnEvent.EventType = current_event;
 //                printf("Just Set: %s\r\n",EventNames[ReturnEvent.EventType]);
                 ReturnEvent.EventParam = current_param;
-            
-            
-            
-            
-            
-//            //Determines the changes from old tape states to the newest one
-//            uint8_t tapeUntrippedEvents = (old_tape_states & (new_tape_states^old_tape_states));
-//            uint8_t tapeTrippedEvents = (new_tape_states & (new_tape_states^old_tape_states));
-//            ES_EventTyp_t current_event_type;
-//            if (tapeTrippedEvents) {
-//                current_event_type = TAPE_SENSOR_TRIPPED;
-//            } else {
-//                current_event_type = TAPE_SENSOR_UNTRIPPED;
-//            }
-//            if (current_event_type != old_event_type) {
-//                uint16_t currentEvents = tapeTrippedEvents; // Set low bits
-//                currentEvents |= (tapeUntrippedEvents << NUM_TAPE_SENSORS); // Set hi bits
-//                ReturnEvent.EventType = current_event_type;
-//                ReturnEvent.EventParam = currentEvents;
-//                old_tape_states = new_tape_states;
-//                old_event_type = current_event_type;
-
-                //            if (new_tape_states != old_tape_states) {
-                //                ES_EventTyp_t currentEventType;
-                //                //Determines the changes from old tape states to the newest one
-                //                uint8_t tapeUntrippedEvents = (old_tape_states & (new_tape_states^old_tape_states));
-                //                uint8_t tapeTrippedEvents = (new_tape_states & (new_tape_states^old_tape_states));
-                //                if (tapeTrippedEvents) {
-                //                    currentEventType = TAPE_SENSOR_TRIPPED;
-                //                } else {
-                //                    currentEventType = TAPE_SENSOR_UNTRIPPED;
-                //                }
-                //
-                //                uint16_t currentEvents = tapeTrippedEvents; // Set low bits
-                //                currentEvents |= (tapeUntrippedEvents << NUM_TAPE_SENSORS); // Set hi bits
-                //                ReturnEvent.EventType = currentEventType;
-                //                ReturnEvent.EventParam = currentEvents;
-                //                old_tape_states = new_tape_states;
-
-
 
 #ifdef TAPE_SENSOR_SERVICE_TEST
                 printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
 #else
-                //                    PostTapeSensorService(ReturnEvent);
-                //                    ES_PostList00(ReturnEvent);
-                PostFollowFSM(ReturnEvent);
+                ES_PostList00(ReturnEvent);
+//                PostFollowFSM(ReturnEvent);
 #endif
             }
             break;

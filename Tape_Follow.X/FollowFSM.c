@@ -61,6 +61,7 @@
 typedef enum {
     InitPState,
     Forward,
+    AlignTape,
     BankLeft,
     BankRight,
 } FollowFSMState_t;
@@ -68,6 +69,7 @@ typedef enum {
 static const char *StateNames[] = {
 	"InitPState",
 	"Forward",
+	"AlignTape",
 	"BankLeft",
 	"BankRight",
 };
@@ -144,7 +146,6 @@ ES_Event RunFollowFSM(ES_Event ThisEvent)
             // this is where you would put any actions associated with the
             // transition from the initial pseudo-state into the actual
             // initial state
-//            motion_init();
 
             // now put the machine into the actual initial state
             nextState = Forward;
@@ -156,36 +157,57 @@ ES_Event RunFollowFSM(ES_Event ThisEvent)
     case Forward: // in the first state, replace this with appropriate state
         switch (ThisEvent.EventType) {
             case ES_ENTRY:
-                motion_move(FORWARD,60);
+                motion_move(FORWARD, 55);
                 break;
-            case TAPE_SENSOR_TRIPPED:
-                nextState = BankRight;
-                makeTransition = TRUE;
-                ThisEvent.EventType = ES_NO_EVENT;
+//            case TAPE_SENSOR_TRIPPED:
+//                if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+//                    nextState = AlignTape;
+//                    makeTransition = TRUE;
+//                    ThisEvent.EventType = ES_NO_EVENT;
+//                }
+        }
+        break;
+        
+    case AlignTape: // in the first state, replace this with appropriate state
+        switch (ThisEvent.EventType) {
+            case ES_ENTRY:
+                motion_bank_right(FORWARD);
+                break;
+            case TAPE_SENSOR_UNTRIPPED:
+                if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
+                    nextState = BankLeft;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                }
         }
         break;
         
     case BankRight: // in the first state, replace this with appropriate state
         switch (ThisEvent.EventType) {
             case ES_ENTRY:
-                motion_pivot_right(FORWARD);
+                motion_tank_right();
                 break;
             case TAPE_SENSOR_UNTRIPPED:
-                nextState = BankLeft;
-                makeTransition = TRUE;
-                ThisEvent.EventType = ES_NO_EVENT;
+                if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
+                    nextState = BankLeft;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                }
         }
         break;
         
         case BankLeft: // in the first state, replace this with appropriate state
         switch (ThisEvent.EventType) {
             case ES_ENTRY:
-                motion_pivot_left(FORWARD);
+                motion_tank_left();
                 break;
             case TAPE_SENSOR_TRIPPED:
-                nextState = BankRight;
-                makeTransition = TRUE;
-                ThisEvent.EventType = ES_NO_EVENT;
+                if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                    nextState = BankRight;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                }
+                
         }
         break;
         

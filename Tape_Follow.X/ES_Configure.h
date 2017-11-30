@@ -14,11 +14,8 @@
 
 #ifndef CONFIGURE_H
 #define CONFIGURE_H
-//
-//#ifndef FALSE
-//#define TRUE ((int8_t) 1)
-//#define FALSE ((int8_t) 0)
-//#endif
+
+#include "BOARD.h" // Using this to get TRUE and FALSE for PostList.h
 
 //defines for keyboard input
 //#define USE_KEYBOARD_INPUT
@@ -238,7 +235,7 @@ static const char *EventNames[] = {
 // These are the definitions for the Distribution lists. Each definition
 // should be a comma seperated list of post functions to indicate which
 // services are on that distribution list.
-#define NUM_DIST_LISTS 0
+#define NUM_DIST_LISTS 1
 #if NUM_DIST_LISTS > 0 
 #define DIST_LIST0 PostFollowFSM
 #endif

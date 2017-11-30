@@ -172,7 +172,7 @@ static uint8_t states[DEBOUNCE_ARRAY_SIZE];
                     printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
                 #else
-                    PostSomewhere();
+                    ES_PostList00(ReturnEvent);
                 #endif
             }
             break;    

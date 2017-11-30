@@ -13,9 +13,9 @@ void motion_move(uint8_t dir, uint8_t speed);
 
 void motion_stop(void);
 
-void motion_tank_left(void);
+void motion_tank_left();
 
-void motion_tank_right(void);
+void motion_tank_right();
 
 void motion_bank_left(uint8_t dir);
 

@@ -17,6 +17,8 @@
 #define MOTOR_PORT PORTY
 #define BEEFY_PORT 
 
+#define MIN_SPEED 60
+
 
 //---------- Private Prototypes ----------//
 void set_motor_direction(uint8_t motor, uint8_t direction);
@@ -59,8 +61,8 @@ void motion_tank_left() {
     set_motor_direction(LEFT_MOTOR, REVERSE);
     set_motor_direction(RIGHT_MOTOR, FORWARD);
     
-    set_motor_speed(LEFT_MOTOR, 100);
-    set_motor_speed(RIGHT_MOTOR, 100);
+    set_motor_speed(LEFT_MOTOR, MIN_SPEED);
+    set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
 }
 
 void motion_tank_right() {
@@ -68,61 +70,39 @@ void motion_tank_right() {
     set_motor_direction(LEFT_MOTOR, FORWARD);
     set_motor_direction(RIGHT_MOTOR, REVERSE);
     
-    set_motor_speed(LEFT_MOTOR, 100);
-    set_motor_speed(RIGHT_MOTOR, 100);
+    set_motor_speed(LEFT_MOTOR, MIN_SPEED);
+    set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
 }
 
 void motion_bank_left(uint8_t dir) {
     
     set_motor_direction(LEFT_MOTOR, dir);
     set_motor_direction(RIGHT_MOTOR, dir);
-    
-    set_motor_speed(LEFT_MOTOR, 60);
-    set_motor_speed(RIGHT_MOTOR, 100);
+     
+    set_motor_speed(LEFT_MOTOR, MIN_SPEED);
+    set_motor_speed(RIGHT_MOTOR, 70);
 }
 
 void motion_bank_right(uint8_t dir) {
     set_motor_direction(LEFT_MOTOR, dir);
     set_motor_direction(RIGHT_MOTOR, dir);
-    
-    set_motor_speed(LEFT_MOTOR, 100);
-    set_motor_speed(RIGHT_MOTOR, 60);
+        
+    set_motor_speed(LEFT_MOTOR, 70);
+    set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
 }
 
 void motion_pivot_left(uint8_t dir) {
+    set_motor_speed(LEFT_MOTOR, 0);
     set_motor_direction(RIGHT_MOTOR, dir);
     
-    set_motor_speed(LEFT_MOTOR, 0);
-    set_motor_speed(RIGHT_MOTOR, 60);
-    
-//    if (dir == REVERSE) {
-//        IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-//        IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-//    } else {
-//        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-//        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-//        
-//    }
-//    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 0);
-//    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 600);
+    set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
 }
 
 void motion_pivot_right(uint8_t dir) {
+    set_motor_speed(RIGHT_MOTOR, 0);
     set_motor_direction(LEFT_MOTOR, dir);
     
-    set_motor_speed(LEFT_MOTOR, 60);
-    set_motor_speed(RIGHT_MOTOR, 0);
-    
-//    if (dir == REVERSE) {
-//        IO_PortsSetPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-//        IO_PortsClearPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-//    } else {
-//        IO_PortsSetPortBits(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-//        IO_PortsClearPortBits(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
-//        
-//    }
-//    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 600);
-//    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 0);
+    set_motor_speed(LEFT_MOTOR, MIN_SPEED);
 }
 
 //void motion_beefy_up(void) {

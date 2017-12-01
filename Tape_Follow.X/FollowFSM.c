@@ -66,8 +66,6 @@ typedef enum {
     FindTape,
     Align,
     CornerReverse,
-    CornerTurn,
-    Track,
     AdjustLeft,
     AdjustRight,
 } FollowFSMState_t;
@@ -77,7 +75,6 @@ static const char *StateNames[] = {
 	"FindTape",
 	"Align",
 	"CornerReverse",
-	"CornerTurn",
 	"Track",
 	"AdjustLeft",
 	"AdjustRight",
@@ -160,13 +157,13 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
             }
             break;
 
-        case FindTape: // in the first state, replace this with appropriate state
+        case FindTape: 
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_move(FORWARD, 30);
                     break;
                 case TAPE_SENSOR_TRIPPED:
-                    if ((ThisEvent.EventParam &TAPE_0_TRIPPED) || (ThisEvent.EventParam &TAPE_2_TRIPPED)) {
+                    if ((ThisEvent.EventParam & TAPE_0_TRIPPED) || (ThisEvent.EventParam & TAPE_2_TRIPPED)) {
                         nextState = Align;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -174,8 +171,6 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                     break;
             }
             break;
-            
-            
 
         case Align: // in the first state, replace this with appropriate state
             switch (ThisEvent.EventType) {
@@ -183,8 +178,9 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                     ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
                     motion_tank_right();
                     break;
+                    
                 case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) { // && ~(get_tape_states() & TAPE_2)) {
+                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
                         nextState = AdjustLeft;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -220,12 +216,9 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
         case AdjustRight: // in the first state, replace this with appropriate state
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-//                    ES_Timer_InitTimer(TURN_TIMER, TAPE_ADJUST_TICKS);
-//                    motion_tank_right();
                     motion_bank_right(FORWARD);
                     break;
                 case TAPE_SENSOR_UNTRIPPED:
-                    //printf("\r\nyup %d", get_tape_states() & TAPE_0);
                     if (ThisEvent.EventParam & TAPE_1_UNTRIPPED && (get_tape_states() & TAPE_0)) {
                         nextState = AdjustLeft;
                         makeTransition = TRUE;
@@ -240,23 +233,12 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-
-//                case ES_TIMEOUT:
-//                    if (ThisEvent.EventParam == TURN_TIMER) {
-//                        nextState = Track;
-//                        makeTransition = TRUE;
-//                        ThisEvent.EventType = ES_NO_EVENT;
-//                    }
-//                    break;
             }
             break;
 
         case AdjustLeft: // in the first state, replace this with appropriate state
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-//                    ES_Timer_InitTimer(TURN_TIMER, TAPE_ADJUST_TICKS);
-//                    motion_pivot_left(FORWARD, 60);
-//                    motion_tank_left();
                     motion_bank_left(FORWARD);
                     break;
                     case TAPE_SENSOR_TRIPPED:
@@ -270,14 +252,6 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                             ThisEvent.EventType = ES_NO_EVENT;
                         }
                         break;
-
-//                case ES_TIMEOUT:
-//                    if (ThisEvent.EventParam == TURN_TIMER) {
-//                        nextState = Track;
-//                        makeTransition = TRUE;
-//                        ThisEvent.EventType = ES_NO_EVENT;
-//                    }
-//                    break;
             }
             break;
 

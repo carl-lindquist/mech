@@ -66,7 +66,7 @@ typedef enum {
     FindTape,
     Align,
     CornerReverse,
-            CornerTurn,
+    CornerTurn,
     Track,
     AdjustLeft,
     AdjustRight,
@@ -166,8 +166,34 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                     motion_move(FORWARD, 30);
                     break;
                 case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                    if ((ThisEvent.EventParam &TAPE_0_TRIPPED) || (ThisEvent.EventParam &TAPE_2_TRIPPED)) {
                         nextState = Align;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+            }
+            break;
+            
+            
+
+        case Align: // in the first state, replace this with appropriate state
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
+                    motion_tank_right();
+                    break;
+                case TAPE_SENSOR_UNTRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) { // && ~(get_tape_states() & TAPE_2)) {
+                        nextState = AdjustLeft;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                        nextState = FindTape;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -181,50 +207,8 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                     motion_move(REVERSE, 30);
                     break;
                 case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_2_UNTRIPPED || ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                        nextState = CornerTurn;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-            }
-            break;
-            
-        case CornerTurn:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_right();
-                    break;
-                case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-                        if(get_tape_states() & TAPE_1){
-                            nextState = AdjustRight;
-                        } else {
-                            nextState = AdjustLeft;
-                        }
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                    
-            }
-            break;
-
-        case Track: // in the first state, replace this with appropriate state
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_move(FORWARD, 45);
-                    break;
-                case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
-                        nextState = AdjustLeft;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                        nextState = AdjustRight;
+                    if (ThisEvent.EventParam & TAPE_2_UNTRIPPED) {
+                        nextState = Align;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -294,30 +278,6 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
 //                        ThisEvent.EventType = ES_NO_EVENT;
 //                    }
 //                    break;
-            }
-            break;
-
-        case Align: // in the first state, replace this with appropriate state
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
-                    motion_tank_right();
-                    break;
-                case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) { // && ~(get_tape_states() & TAPE_2)) {
-                        nextState = AdjustLeft;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
-                        nextState = FindTape;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
             }
             break;
 

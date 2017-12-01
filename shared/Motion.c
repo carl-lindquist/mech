@@ -17,7 +17,6 @@
 #define MOTOR_PORT PORTY
 #define BEEFY_PORT 
 
-#define MIN_SPEED 59
 
 
 //---------- Private Prototypes ----------//
@@ -42,6 +41,9 @@ void motion_init(void) {
 }
 
 void motion_move(uint8_t dir, uint8_t speed) {
+    if (speed < MIN_SPEED) {
+        speed = MIN_SPEED;
+    }
     
     set_motor_direction(LEFT_MOTOR, dir);
     set_motor_direction(RIGHT_MOTOR, dir);
@@ -80,14 +82,14 @@ void motion_bank_left(uint8_t dir) {
     set_motor_direction(RIGHT_MOTOR, dir);
      
     set_motor_speed(LEFT_MOTOR, MIN_SPEED);
-    set_motor_speed(RIGHT_MOTOR, 90);
+    set_motor_speed(RIGHT_MOTOR, MIN_SPEED + 20);
 }
 
 void motion_bank_right(uint8_t dir) {
     set_motor_direction(LEFT_MOTOR, dir);
     set_motor_direction(RIGHT_MOTOR, dir);
         
-    set_motor_speed(LEFT_MOTOR, 100);
+    set_motor_speed(LEFT_MOTOR, MIN_SPEED + 20);
     set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
 }
 
@@ -95,14 +97,14 @@ void motion_pivot_left(uint8_t dir) {
     set_motor_speed(LEFT_MOTOR, 0);
     set_motor_direction(RIGHT_MOTOR, dir);
     
-    set_motor_speed(RIGHT_MOTOR, MIN_SPEED);
+    set_motor_speed(RIGHT_MOTOR, MIN_SPEED + 15);
 }
 
 void motion_pivot_right(uint8_t dir) {
     set_motor_speed(RIGHT_MOTOR, 0);
     set_motor_direction(LEFT_MOTOR, dir);
     
-    set_motor_speed(LEFT_MOTOR, MIN_SPEED);
+    set_motor_speed(LEFT_MOTOR, MIN_SPEED + 15);
 }
 
 //void motion_beefy_up(void) {

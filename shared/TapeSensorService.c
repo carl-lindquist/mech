@@ -25,14 +25,17 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define SERVICE_TIMER_TICKS 30
+#define SERVICE_TIMER_TICKS 3
 
 #define DEBOUNCE_PERIOD 1
 #define DEBOUNCE_ARRAY_SIZE (DEBOUNCE_PERIOD + 2)
 #define NEW_INDEX (DEBOUNCE_ARRAY_SIZE - 1)
 #define OLD_INDEX 0
 
-#define TAPE_THRESH 150
+//#define TAPE_HI_THRESH 150
+//#define TAPE_LO_THRESH (TAPE_HI_THRESH - 20
+
+#define TAPE_THRESH 200
 #define TAPE_SENSOR_1_PIN AD_PORTV3
 #define TAPE_SENSOR_2_PIN AD_PORTV4
 #define TAPE_SENSOR_3_PIN AD_PORTV5
@@ -66,7 +69,7 @@ static uint8_t states[DEBOUNCE_ARRAY_SIZE];
 
 uint8_t get_tape_states(void) {
     return ~states[NEW_INDEX];
-//    return old_tape_states;
+//    return ~old_tape_states;
 }
 
 /**
@@ -143,6 +146,7 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
         case ES_TIMEOUT:
             ES_Timer_InitTimer(TAPE_SENSOR_SERVICE_TIMER, SERVICE_TIMER_TICKS);
 
+            
             states[NEW_INDEX] = read_tape_sensors();
             /* Shift your old values back for debouncing, check newer states for equality */
             uint8_t eventOccurred = 1;
@@ -158,8 +162,8 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
             if (states[OLD_INDEX] == states[NEW_INDEX]) {
                 eventOccurred = 0;
             }
-            
             if (eventOccurred) {
+            
                 ES_EventTyp_t current_event;
                 //Determines the changes from old bump states to the newest one
                 uint8_t tape_trip_events = (states[OLD_INDEX]&(states[NEW_INDEX]^states[OLD_INDEX]));
@@ -173,7 +177,6 @@ ES_Event RunTapeSensorService(ES_Event ThisEvent) {
                 uint16_t current_param = tape_trip_events; // Set low bits
                 current_param = current_param | (tape_untrip_events << NUM_TAPE_SENSORS); // Set hi bits
                 ReturnEvent.EventType = current_event;
-//                printf("Just Set: %s\r\n",EventNames[ReturnEvent.EventType]);
                 ReturnEvent.EventParam = current_param;
 
 #ifdef TAPE_SENSOR_SERVICE_TEST
@@ -209,3 +212,4 @@ uint8_t read_tape_sensors(void) {
     states |= AD_ReadADPin(TAPE_SENSOR_1_PIN) > TAPE_THRESH;
     return states;
 }
+

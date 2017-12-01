@@ -5,6 +5,7 @@
 #define FORWARD 1
 #define REVERSE 0
 
+#define MIN_SPEED 30
 
 
 void motion_init();

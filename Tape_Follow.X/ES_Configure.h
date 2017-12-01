@@ -81,7 +81,7 @@ static const char *EventNames[] = {
 // a timers, then you can use TIMER_UNUSED
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostTapeSensorService
-#define TIMER1_RESP_FUNC TIMER_UNUSED
+#define TIMER1_RESP_FUNC PostFollowFSM
 #define TIMER2_RESP_FUNC TIMER_UNUSED
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
@@ -105,6 +105,7 @@ static const char *EventNames[] = {
 // the timer number matches where the timer event will be routed
 
 #define TAPE_SENSOR_SERVICE_TIMER 0
+#define FRUSTRATION_TIMER 1
 
 
 /****************************************************************************/

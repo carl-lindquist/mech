@@ -82,7 +82,7 @@ static const char *EventNames[] = {
 #define TIMER_UNUSED ((pPostFunc)0)
 #define TIMER0_RESP_FUNC PostTapeSensorService
 #define TIMER1_RESP_FUNC PostFollowFSM
-#define TIMER2_RESP_FUNC TIMER_UNUSED
+#define TIMER2_RESP_FUNC PostFollowFSM
 #define TIMER3_RESP_FUNC TIMER_UNUSED
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
@@ -106,6 +106,7 @@ static const char *EventNames[] = {
 
 #define TAPE_SENSOR_SERVICE_TIMER 0
 #define FRUSTRATION_TIMER 1
+#define TURN_TIMER 2
 
 
 /****************************************************************************/

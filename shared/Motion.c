@@ -17,6 +17,12 @@
 #define MOTOR_PORT PORTY
 #define BEEFY_PORT 
 
+#define REN_DOOR_SERVO_PIN RC_PORTX03
+#define BRIDGE_DOOR_SERVO_PIN RC_PORTX04
+#define BRIDGE_SERVO_PIN RC_PORTY06
+
+
+
 
 
 //---------- Private Prototypes ----------//
@@ -33,9 +39,9 @@ void motion_init(void) {
     PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 0);
     
     RC_Init();
-    RC_AddPins(RC_PORTX03);
-    RC_AddPins(RC_PORTX04);
-    RC_AddPins(RC_PORTV04);
+    RC_AddPins(REN_DOOR_SERVO_PIN);
+    RC_AddPins(BRIDGE_DOOR_SERVO_PIN);
+    RC_AddPins(BRIDGE_SERVO_PIN);
     
     IO_PortsSetPortOutputs(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
     IO_PortsSetPortOutputs(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
@@ -61,8 +67,8 @@ void motion_tank_left() {
     set_motor_direction(LEFT_MOTOR, REVERSE);
     set_motor_direction(RIGHT_MOTOR, FORWARD);
     
-    set_motor_speed(LEFT_MOTOR, 20);
-    set_motor_speed(RIGHT_MOTOR, 20);
+    set_motor_speed(LEFT_MOTOR, 35);
+    set_motor_speed(RIGHT_MOTOR, 35);
 }
 
 void motion_tank_right() {
@@ -70,8 +76,8 @@ void motion_tank_right() {
     set_motor_direction(LEFT_MOTOR, FORWARD);
     set_motor_direction(RIGHT_MOTOR, REVERSE);
     
-    set_motor_speed(LEFT_MOTOR, 20);
-    set_motor_speed(RIGHT_MOTOR, 20);
+    set_motor_speed(LEFT_MOTOR, 35);
+    set_motor_speed(RIGHT_MOTOR, 35);
 }
 
 void motion_bank_left(uint8_t dir) {

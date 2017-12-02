@@ -23,9 +23,9 @@
       <itemPath>ES_Configure.h</itemPath>
       <itemPath>C:/CMPE118/include/pwm.h</itemPath>
       <itemPath>C:/CMPE118/include/IO_Ports.h</itemPath>
-      <itemPath>BumperService.h</itemPath>
       <itemPath>../shared/TapeSensorService.h</itemPath>
       <itemPath>../shared/TrackwireService.h</itemPath>
+      <itemPath>../shared/BumperService.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -48,9 +48,9 @@
       <itemPath>C:/CMPE118/src/pwm.c</itemPath>
       <itemPath>C:/CMPE118/src/IO_Ports.c</itemPath>
       <itemPath>TemplateES_Main.c</itemPath>
-      <itemPath>BumperService.c</itemPath>
       <itemPath>../shared/TapeSensorService.c</itemPath>
       <itemPath>../shared/TrackwireService.c</itemPath>
+      <itemPath>../shared/BumperService.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

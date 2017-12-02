@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/ES_CheckEvents.c C:/CMPE118/src/ES_Framework.c C:/CMPE118/src/ES_KeyboardInput.c C:/CMPE118/src/ES_PostList.c C:/CMPE118/src/ES_Queue.c C:/CMPE118/src/ES_TattleTale.c C:/CMPE118/src/ES_Timers.c C:/CMPE118/src/pwm.c C:/CMPE118/src/IO_Ports.c TemplateES_Main.c BumperService.c ../shared/TapeSensorService.c ../shared/TrackwireService.c
+SOURCEFILES_QUOTED_IF_SPACED=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/ES_CheckEvents.c C:/CMPE118/src/ES_Framework.c C:/CMPE118/src/ES_KeyboardInput.c C:/CMPE118/src/ES_PostList.c C:/CMPE118/src/ES_Queue.c C:/CMPE118/src/ES_TattleTale.c C:/CMPE118/src/ES_Timers.c C:/CMPE118/src/pwm.c C:/CMPE118/src/IO_Ports.c TemplateES_Main.c ../shared/TapeSensorService.c ../shared/TrackwireService.c ../shared/BumperService.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/ES_CheckEvents.o ${OBJECTDIR}/_ext/331920610/ES_Framework.o ${OBJECTDIR}/_ext/331920610/ES_KeyboardInput.o ${OBJECTDIR}/_ext/331920610/ES_PostList.o ${OBJECTDIR}/_ext/331920610/ES_Queue.o ${OBJECTDIR}/_ext/331920610/ES_TattleTale.o ${OBJECTDIR}/_ext/331920610/ES_Timers.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/BumperService.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/331920610/AD.o.d ${OBJECTDIR}/_ext/331920610/BOARD.o.d ${OBJECTDIR}/_ext/331920610/serial.o.d ${OBJECTDIR}/_ext/331920610/ES_CheckEvents.o.d ${OBJECTDIR}/_ext/331920610/ES_Framework.o.d ${OBJECTDIR}/_ext/331920610/ES_KeyboardInput.o.d ${OBJECTDIR}/_ext/331920610/ES_PostList.o.d ${OBJECTDIR}/_ext/331920610/ES_Queue.o.d ${OBJECTDIR}/_ext/331920610/ES_TattleTale.o.d ${OBJECTDIR}/_ext/331920610/ES_Timers.o.d ${OBJECTDIR}/_ext/331920610/pwm.o.d ${OBJECTDIR}/_ext/331920610/IO_Ports.o.d ${OBJECTDIR}/TemplateES_Main.o.d ${OBJECTDIR}/BumperService.o.d ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/ES_CheckEvents.o ${OBJECTDIR}/_ext/331920610/ES_Framework.o ${OBJECTDIR}/_ext/331920610/ES_KeyboardInput.o ${OBJECTDIR}/_ext/331920610/ES_PostList.o ${OBJECTDIR}/_ext/331920610/ES_Queue.o ${OBJECTDIR}/_ext/331920610/ES_TattleTale.o ${OBJECTDIR}/_ext/331920610/ES_Timers.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/_ext/331920610/AD.o.d ${OBJECTDIR}/_ext/331920610/BOARD.o.d ${OBJECTDIR}/_ext/331920610/serial.o.d ${OBJECTDIR}/_ext/331920610/ES_CheckEvents.o.d ${OBJECTDIR}/_ext/331920610/ES_Framework.o.d ${OBJECTDIR}/_ext/331920610/ES_KeyboardInput.o.d ${OBJECTDIR}/_ext/331920610/ES_PostList.o.d ${OBJECTDIR}/_ext/331920610/ES_Queue.o.d ${OBJECTDIR}/_ext/331920610/ES_TattleTale.o.d ${OBJECTDIR}/_ext/331920610/ES_Timers.o.d ${OBJECTDIR}/_ext/331920610/pwm.o.d ${OBJECTDIR}/_ext/331920610/IO_Ports.o.d ${OBJECTDIR}/TemplateES_Main.o.d ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d ${OBJECTDIR}/_ext/819228780/BumperService.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/ES_CheckEvents.o ${OBJECTDIR}/_ext/331920610/ES_Framework.o ${OBJECTDIR}/_ext/331920610/ES_KeyboardInput.o ${OBJECTDIR}/_ext/331920610/ES_PostList.o ${OBJECTDIR}/_ext/331920610/ES_Queue.o ${OBJECTDIR}/_ext/331920610/ES_TattleTale.o ${OBJECTDIR}/_ext/331920610/ES_Timers.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/BumperService.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o
+OBJECTFILES=${OBJECTDIR}/_ext/331920610/AD.o ${OBJECTDIR}/_ext/331920610/BOARD.o ${OBJECTDIR}/_ext/331920610/serial.o ${OBJECTDIR}/_ext/331920610/ES_CheckEvents.o ${OBJECTDIR}/_ext/331920610/ES_Framework.o ${OBJECTDIR}/_ext/331920610/ES_KeyboardInput.o ${OBJECTDIR}/_ext/331920610/ES_PostList.o ${OBJECTDIR}/_ext/331920610/ES_Queue.o ${OBJECTDIR}/_ext/331920610/ES_TattleTale.o ${OBJECTDIR}/_ext/331920610/ES_Timers.o ${OBJECTDIR}/_ext/331920610/pwm.o ${OBJECTDIR}/_ext/331920610/IO_Ports.o ${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o
 
 # Source Files
-SOURCEFILES=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/ES_CheckEvents.c C:/CMPE118/src/ES_Framework.c C:/CMPE118/src/ES_KeyboardInput.c C:/CMPE118/src/ES_PostList.c C:/CMPE118/src/ES_Queue.c C:/CMPE118/src/ES_TattleTale.c C:/CMPE118/src/ES_Timers.c C:/CMPE118/src/pwm.c C:/CMPE118/src/IO_Ports.c TemplateES_Main.c BumperService.c ../shared/TapeSensorService.c ../shared/TrackwireService.c
+SOURCEFILES=C:/CMPE118/src/AD.c C:/CMPE118/src/BOARD.c C:/CMPE118/src/serial.c C:/CMPE118/src/ES_CheckEvents.c C:/CMPE118/src/ES_Framework.c C:/CMPE118/src/ES_KeyboardInput.c C:/CMPE118/src/ES_PostList.c C:/CMPE118/src/ES_Queue.c C:/CMPE118/src/ES_TattleTale.c C:/CMPE118/src/ES_Timers.c C:/CMPE118/src/pwm.c C:/CMPE118/src/IO_Ports.c TemplateES_Main.c ../shared/TapeSensorService.c ../shared/TrackwireService.c ../shared/BumperService.c
 
 
 CFLAGS=
@@ -197,12 +197,6 @@ ${OBJECTDIR}/TemplateES_Main.o: TemplateES_Main.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/TemplateES_Main.o 
 	@${FIXDEPS} "${OBJECTDIR}/TemplateES_Main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/TemplateES_Main.o.d" -o ${OBJECTDIR}/TemplateES_Main.o TemplateES_Main.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/BumperService.o: BumperService.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/BumperService.o.d 
-	@${RM} ${OBJECTDIR}/BumperService.o 
-	@${FIXDEPS} "${OBJECTDIR}/BumperService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/BumperService.o.d" -o ${OBJECTDIR}/BumperService.o BumperService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
 ${OBJECTDIR}/_ext/819228780/TapeSensorService.o: ../shared/TapeSensorService.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
 	@${RM} ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d 
@@ -214,6 +208,12 @@ ${OBJECTDIR}/_ext/819228780/TrackwireService.o: ../shared/TrackwireService.c  nb
 	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d 
 	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" -o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ../shared/TrackwireService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/_ext/819228780/BumperService.o: ../shared/BumperService.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o.d 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/BumperService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/_ext/819228780/BumperService.o.d" -o ${OBJECTDIR}/_ext/819228780/BumperService.o ../shared/BumperService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 else
 ${OBJECTDIR}/_ext/331920610/AD.o: C:/CMPE118/src/AD.c  nbproject/Makefile-${CND_CONF}.mk
@@ -294,12 +294,6 @@ ${OBJECTDIR}/TemplateES_Main.o: TemplateES_Main.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/TemplateES_Main.o 
 	@${FIXDEPS} "${OBJECTDIR}/TemplateES_Main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/TemplateES_Main.o.d" -o ${OBJECTDIR}/TemplateES_Main.o TemplateES_Main.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/BumperService.o: BumperService.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/BumperService.o.d 
-	@${RM} ${OBJECTDIR}/BumperService.o 
-	@${FIXDEPS} "${OBJECTDIR}/BumperService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/BumperService.o.d" -o ${OBJECTDIR}/BumperService.o BumperService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
 ${OBJECTDIR}/_ext/819228780/TapeSensorService.o: ../shared/TapeSensorService.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
 	@${RM} ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d 
@@ -311,6 +305,12 @@ ${OBJECTDIR}/_ext/819228780/TrackwireService.o: ../shared/TrackwireService.c  nb
 	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d 
 	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" -o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ../shared/TrackwireService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/_ext/819228780/BumperService.o: ../shared/BumperService.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o.d 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/BumperService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -DTAPE_SENSOR_SERVICE_TEST -DBUMPER_SERVICE_TEST -DTRACKWIRE_SERVICE_TEST -I"." -I"C:/CMPE118/include" -I"../shared" -MMD -MF "${OBJECTDIR}/_ext/819228780/BumperService.o.d" -o ${OBJECTDIR}/_ext/819228780/BumperService.o ../shared/BumperService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 endif
 

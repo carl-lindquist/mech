@@ -30,10 +30,11 @@
 
 #include "ES_Configure.h"
 #include "ES_Framework.h"
-
-#include "FollowFSM.h"
 #include <BOARD.h>
 #include <stdio.h>
+
+#include "HSM.h"
+#include "FollowTapeSSM.h"
 
 #include "TapeSensorService.h"
 #include "Motion.h"
@@ -68,7 +69,7 @@ typedef enum {
     CornerReverse,
     AdjustLeft,
     AdjustRight,
-} FollowFSMState_t;
+} FollowTapeSSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
@@ -80,7 +81,7 @@ static const char *StateNames[] = {
 };
 
 
-static FollowFSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
+static FollowTapeSSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
 
 
@@ -89,8 +90,7 @@ static uint8_t MyPriority;
  ******************************************************************************/
 
 /**
- * @Function InitTemplateFSM(uint8_t Priority)
- * @param Priority - internal variable to track which event queue to use
+ * @Function InitFollowTapeSSM(void)
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
  *        execution. It will post an ES_INIT event to the appropriate event
@@ -98,12 +98,13 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitFollowFSM(uint8_t Priority) {
-    MyPriority = Priority;
+uint8_t InitFollowTapeSSM(void) {
+    ES_Event returnEvent;
     // put us into the Initial PseudoState
     CurrentState = InitPState;
+    returnEvent = RunFollowTapeSSM(INIT_EVENT);
     // post the initial transition event
-    if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE) {
+    if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
     } else {
         return FALSE;
@@ -111,20 +112,7 @@ uint8_t InitFollowFSM(uint8_t Priority) {
 }
 
 /**
- * @Function PostTemplateFSM(ES_Event ThisEvent)
- * @param ThisEvent - the event (type and param) to be posted to queue
- * @return TRUE or FALSE
- * @brief This function is a wrapper to the queue posting function, and its name
- *        will be used inside ES_Configure to point to which queue events should
- *        be posted to. Remember to rename to something appropriate.
- *        Returns TRUE if successful, FALSE otherwise
- * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t PostFollowFSM(ES_Event ThisEvent) {
-    return ES_PostToService(MyPriority, ThisEvent);
-}
-
-/**
- * @Function RunTemplateFSM(ES_Event ThisEvent)
+ * @Function RunFollowTapeSSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
  * @brief This function is where you implement the whole of the flat state machine,
@@ -135,9 +123,9 @@ uint8_t PostFollowFSM(ES_Event ThisEvent) {
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed."
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunFollowFSM(ES_Event ThisEvent) {
+ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
     uint8_t makeTransition = FALSE; // use to flag transition
-    FollowFSMState_t nextState; // <- need to change enum type here
+    FollowTapeSSMState_t nextState;
 
     ES_Tattle(); // trace call stack
 
@@ -150,13 +138,17 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                 // initial state
 
                 // now put the machine into the actual initial state
-                nextState = FindTape;
+                if (get_tape_states() & TAPE_1) {
+                    nextState = Align;
+                } else {
+                    nextState = FindTape;
+                }
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
             break;
 
-        case FindTape: 
+        case FindTape:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_move(FORWARD, 30);
@@ -168,6 +160,9 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
             }
             break;
 
@@ -177,7 +172,7 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                     ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
                     motion_tank_right();
                     break;
-                    
+
                 case TAPE_SENSOR_UNTRIPPED:
                     if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
                         nextState = AdjustLeft;
@@ -193,6 +188,9 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
             }
             break;
 
@@ -207,6 +205,9 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
+                    break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
                     break;
             }
             break;
@@ -232,6 +233,9 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
             }
             break;
 
@@ -240,29 +244,31 @@ ES_Event RunFollowFSM(ES_Event ThisEvent) {
                 case ES_ENTRY:
                     motion_bank_left(FORWARD);
                     break;
-                    case TAPE_SENSOR_TRIPPED:
-                        if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
-                            nextState = AdjustRight;
-                            makeTransition = TRUE;
-                            ThisEvent.EventType = ES_NO_EVENT;
-                        } else if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-                            nextState = CornerReverse;
-                            makeTransition = TRUE;
-                            ThisEvent.EventType = ES_NO_EVENT;
-                        }
-                        break;
+                case TAPE_SENSOR_TRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                        nextState = AdjustRight;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    } else if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
+                        nextState = CornerReverse;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
             }
             break;
-
 
         default: // all unhandled states fall into here
             break;
     } // end switch on Current State
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunFollowFSM(EXIT_EVENT);
+        RunFollowTapeSSM(EXIT_EVENT);
         CurrentState = nextState;
-        RunFollowFSM(ENTRY_EVENT);
+        RunFollowTapeSSM(ENTRY_EVENT);
     }
     ES_Tail(); // trace call stack end
     return ThisEvent;

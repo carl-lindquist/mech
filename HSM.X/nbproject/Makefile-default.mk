@@ -30,12 +30,12 @@ ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IMAGE_TYPE=debug
 OUTPUT_SUFFIX=elf
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 else
 IMAGE_TYPE=production
 OUTPUT_SUFFIX=hex
 DEBUGGABLE_SUFFIX=elf
-FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+FINAL_IMAGE=dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 endif
 
 ifeq ($(COMPARE_BUILD), true)
@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=TemplateES_Main.c FollowFSM.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c
+SOURCEFILES_QUOTED_IF_SPACED=TemplateES_Main.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c ../shared/TrackwireService.c ../shared/BumperService.c HSM.c FollowTapeSSM.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/FollowFSM.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/TemplateES_Main.o.d ${OBJECTDIR}/FollowFSM.o.d ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d ${OBJECTDIR}/_ext/819228780/Motion.o.d ${OBJECTDIR}/_ext/417556191/AD.o.d ${OBJECTDIR}/_ext/417556191/BOARD.o.d ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o.d ${OBJECTDIR}/_ext/417556191/ES_Framework.o.d ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o.d ${OBJECTDIR}/_ext/417556191/ES_PostList.o.d ${OBJECTDIR}/_ext/417556191/ES_Queue.o.d ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o.d ${OBJECTDIR}/_ext/417556191/ES_Timers.o.d ${OBJECTDIR}/_ext/417556191/IO_Ports.o.d ${OBJECTDIR}/_ext/417556191/RC_Servo.o.d ${OBJECTDIR}/_ext/417556191/pwm.o.d ${OBJECTDIR}/_ext/417556191/serial.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o ${OBJECTDIR}/HSM.o ${OBJECTDIR}/FollowTapeSSM.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/TemplateES_Main.o.d ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d ${OBJECTDIR}/_ext/819228780/Motion.o.d ${OBJECTDIR}/_ext/417556191/AD.o.d ${OBJECTDIR}/_ext/417556191/BOARD.o.d ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o.d ${OBJECTDIR}/_ext/417556191/ES_Framework.o.d ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o.d ${OBJECTDIR}/_ext/417556191/ES_PostList.o.d ${OBJECTDIR}/_ext/417556191/ES_Queue.o.d ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o.d ${OBJECTDIR}/_ext/417556191/ES_Timers.o.d ${OBJECTDIR}/_ext/417556191/IO_Ports.o.d ${OBJECTDIR}/_ext/417556191/RC_Servo.o.d ${OBJECTDIR}/_ext/417556191/pwm.o.d ${OBJECTDIR}/_ext/417556191/serial.o.d ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d ${OBJECTDIR}/_ext/819228780/BumperService.o.d ${OBJECTDIR}/HSM.o.d ${OBJECTDIR}/FollowTapeSSM.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/FollowFSM.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o
+OBJECTFILES=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o ${OBJECTDIR}/HSM.o ${OBJECTDIR}/FollowTapeSSM.o
 
 # Source Files
-SOURCEFILES=TemplateES_Main.c FollowFSM.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c
+SOURCEFILES=TemplateES_Main.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c ../shared/TrackwireService.c ../shared/BumperService.c HSM.c FollowTapeSSM.c
 
 
 CFLAGS=
@@ -85,11 +85,11 @@ FIXDEPS=fixDeps
 
 # The following macros may be used in the pre and post step lines
 Device=PIC32MX320F128H
-ProjectDir="C:\Users\clindqui\Desktop\Code\mech\Tape_Follow.X"
+ProjectDir="C:\Users\clindqui\Desktop\Code\mech\HSM.X"
 ConfName=default
-ImagePath="dist\default\${IMAGE_TYPE}\Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImagePath="dist\default\${IMAGE_TYPE}\HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ImageDir="dist\default\${IMAGE_TYPE}"
-ImageName="Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
+ImageName="HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}"
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
 IsDebug="true"
 else
@@ -100,7 +100,7 @@ endif
 ifneq ($(INFORMATION_MESSAGE), )
 	@echo $(INFORMATION_MESSAGE)
 endif
-	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
+	${MAKE}  -f nbproject/Makefile-default.mk dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}
 
 MP_PROCESSOR_OPTION=32MX320F128H
 MP_LINKER_FILE_OPTION=,--script="C:\CMPE118\bootloader320.ld"
@@ -124,12 +124,6 @@ ${OBJECTDIR}/TemplateES_Main.o: TemplateES_Main.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/TemplateES_Main.o.d 
 	@${RM} ${OBJECTDIR}/TemplateES_Main.o 
 	@${FIXDEPS} "${OBJECTDIR}/TemplateES_Main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/TemplateES_Main.o.d" -o ${OBJECTDIR}/TemplateES_Main.o TemplateES_Main.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
-${OBJECTDIR}/FollowFSM.o: FollowFSM.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/FollowFSM.o.d 
-	@${RM} ${OBJECTDIR}/FollowFSM.o 
-	@${FIXDEPS} "${OBJECTDIR}/FollowFSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/FollowFSM.o.d" -o ${OBJECTDIR}/FollowFSM.o FollowFSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 ${OBJECTDIR}/_ext/819228780/TapeSensorService.o: ../shared/TapeSensorService.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
@@ -221,18 +215,36 @@ ${OBJECTDIR}/_ext/417556191/serial.o: ../CMPE118/src/serial.c  nbproject/Makefil
 	@${RM} ${OBJECTDIR}/_ext/417556191/serial.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/417556191/serial.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/417556191/serial.o.d" -o ${OBJECTDIR}/_ext/417556191/serial.o ../CMPE118/src/serial.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
+${OBJECTDIR}/_ext/819228780/TrackwireService.o: ../shared/TrackwireService.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
+	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d 
+	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" -o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ../shared/TrackwireService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/_ext/819228780/BumperService.o: ../shared/BumperService.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o.d 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/BumperService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/819228780/BumperService.o.d" -o ${OBJECTDIR}/_ext/819228780/BumperService.o ../shared/BumperService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/HSM.o: HSM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/HSM.o.d 
+	@${RM} ${OBJECTDIR}/HSM.o 
+	@${FIXDEPS} "${OBJECTDIR}/HSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/HSM.o.d" -o ${OBJECTDIR}/HSM.o HSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/FollowTapeSSM.o: FollowTapeSSM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/FollowTapeSSM.o.d 
+	@${RM} ${OBJECTDIR}/FollowTapeSSM.o 
+	@${FIXDEPS} "${OBJECTDIR}/FollowTapeSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/FollowTapeSSM.o.d" -o ${OBJECTDIR}/FollowTapeSSM.o FollowTapeSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
 else
 ${OBJECTDIR}/TemplateES_Main.o: TemplateES_Main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/TemplateES_Main.o.d 
 	@${RM} ${OBJECTDIR}/TemplateES_Main.o 
 	@${FIXDEPS} "${OBJECTDIR}/TemplateES_Main.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/TemplateES_Main.o.d" -o ${OBJECTDIR}/TemplateES_Main.o TemplateES_Main.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
-${OBJECTDIR}/FollowFSM.o: FollowFSM.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/FollowFSM.o.d 
-	@${RM} ${OBJECTDIR}/FollowFSM.o 
-	@${FIXDEPS} "${OBJECTDIR}/FollowFSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/FollowFSM.o.d" -o ${OBJECTDIR}/FollowFSM.o FollowFSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 ${OBJECTDIR}/_ext/819228780/TapeSensorService.o: ../shared/TapeSensorService.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
@@ -324,6 +336,30 @@ ${OBJECTDIR}/_ext/417556191/serial.o: ../CMPE118/src/serial.c  nbproject/Makefil
 	@${RM} ${OBJECTDIR}/_ext/417556191/serial.o 
 	@${FIXDEPS} "${OBJECTDIR}/_ext/417556191/serial.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/417556191/serial.o.d" -o ${OBJECTDIR}/_ext/417556191/serial.o ../CMPE118/src/serial.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
+${OBJECTDIR}/_ext/819228780/TrackwireService.o: ../shared/TrackwireService.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
+	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d 
+	@${RM} ${OBJECTDIR}/_ext/819228780/TrackwireService.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/819228780/TrackwireService.o.d" -o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ../shared/TrackwireService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/_ext/819228780/BumperService.o: ../shared/BumperService.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}/_ext/819228780" 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o.d 
+	@${RM} ${OBJECTDIR}/_ext/819228780/BumperService.o 
+	@${FIXDEPS} "${OBJECTDIR}/_ext/819228780/BumperService.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/_ext/819228780/BumperService.o.d" -o ${OBJECTDIR}/_ext/819228780/BumperService.o ../shared/BumperService.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/HSM.o: HSM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/HSM.o.d 
+	@${RM} ${OBJECTDIR}/HSM.o 
+	@${FIXDEPS} "${OBJECTDIR}/HSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/HSM.o.d" -o ${OBJECTDIR}/HSM.o HSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/FollowTapeSSM.o: FollowTapeSSM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/FollowTapeSSM.o.d 
+	@${RM} ${OBJECTDIR}/FollowTapeSSM.o 
+	@${FIXDEPS} "${OBJECTDIR}/FollowTapeSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/FollowTapeSSM.o.d" -o ${OBJECTDIR}/FollowTapeSSM.o FollowTapeSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
 endif
 
 # ------------------------------------------------------------------------------------
@@ -335,15 +371,15 @@ endif
 # ------------------------------------------------------------------------------------
 # Rules for buildStep: link
 ifeq ($(TYPE_IMAGE), DEBUG_RUN)
-dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    C:/CMPE118/bootloader320.ld
+dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk    C:/CMPE118/bootloader320.ld
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -mdebugger -D__MPLAB_DEBUGGER_SIMULATOR=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)      -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,-D=__DEBUG_D,--defsym=__MPLAB_DEBUGGER_SIMULATOR=1,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -mdebugger -D__MPLAB_DEBUGGER_SIMULATOR=1 -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)      -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--defsym=__MPLAB_DEBUG=1,--defsym=__DEBUG=1,-D=__DEBUG_D,--defsym=__MPLAB_DEBUGGER_SIMULATOR=1,--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
 	
 else
-dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   C:/CMPE118/bootloader320.ld
+dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${OUTPUT_SUFFIX}: ${OBJECTFILES}  nbproject/Makefile-${CND_CONF}.mk   C:/CMPE118/bootloader320.ld
 	@${MKDIR} dist/${CND_CONF}/${IMAGE_TYPE} 
-	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
-	${MP_CC_DIR}\\xc32-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/Tape_Follow.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} 
+	${MP_CC} $(MP_EXTRA_LD_PRE)  -mprocessor=$(MP_PROCESSOR_OPTION)  -o dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} ${OBJECTFILES_QUOTED_IF_SPACED}          -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD)  -Wl,--defsym=__MPLAB_BUILD=1$(MP_EXTRA_LD_POST)$(MP_LINKER_FILE_OPTION),--no-code-in-dinit,--no-dinit-in-serial-mem,-Map="${DISTDIR}/${PROJECTNAME}.${IMAGE_TYPE}.map",--memorysummary,dist/${CND_CONF}/${IMAGE_TYPE}/memoryfile.xml
+	${MP_CC_DIR}\\xc32-bin2hex dist/${CND_CONF}/${IMAGE_TYPE}/HSM.X.${IMAGE_TYPE}.${DEBUGGABLE_SUFFIX} 
 endif
 
 .pre:

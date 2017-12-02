@@ -15,14 +15,17 @@
 #define RIGHT_MOTOR 1
 
 #define MOTOR_PORT PORTY
-#define BEEFY_PORT 
 
 #define REN_DOOR_SERVO_PIN RC_PORTX03
 #define BRIDGE_DOOR_SERVO_PIN RC_PORTX04
 #define BRIDGE_SERVO_PIN RC_PORTY06
 
-
-
+#define BRIDGE_UP 1000
+#define BRIDGE_DOWN 2100
+#define BRIDGE_DOOR_OPEN 1700
+#define BRIDGE_DOOR_CLOSED 1300
+#define REN_DOOR_OPEN 1200
+#define REN_DOOR_CLOSED 1600
 
 
 //---------- Private Prototypes ----------//
@@ -111,29 +114,33 @@ void motion_pivot_right(uint8_t dir, uint8_t speed) {
     set_motor_speed(LEFT_MOTOR, correct_speed(speed));
 }
 
-//void motion_beefy_up(void) {
-//    RC_SetPulseTime(2000);
-//}
-//
-//void motion_beefy_down(void) {
-//    RC_SetPulseTime(1000);
-//}
-//
-//void motion_ren_door_up(void) {
-//    RC_SetPulseTime(2000);
-//}
-//
-//void motion_ren_door_down(void) {
-//    RC_SetPulseTime(1000);
-//}
-//
-//void motion_track_door_up(void) {
-//    RC_SetPulseTime(2000);
-//}
-//
-//void motion_track_door_down(void) {
-//    RC_SetPulseTime(1000);
-//}
+
+
+void motion_lower_bridge(void) {
+    RC_SetPulseTime(BRIDGE_SERVO_PIN, BRIDGE_DOWN);
+}
+
+void motion_raise_bridge(void) {
+    RC_SetPulseTime(BRIDGE_SERVO_PIN, BRIDGE_UP);
+}
+
+void motion_open_bridge_door(void) {
+    RC_SetPulseTime(BRIDGE_DOOR_SERVO_PIN, BRIDGE_DOOR_OPEN);
+}
+
+void motion_close_bridge_door(void) {
+    RC_SetPulseTime(BRIDGE_DOOR_SERVO_PIN, BRIDGE_DOOR_CLOSED);
+}
+
+void motion_open_ren_door(void) {
+    RC_SetPulseTime(REN_DOOR_SERVO_PIN, REN_DOOR_OPEN);
+}
+
+void motion_close_ren_door(void) {
+    RC_SetPulseTime(REN_DOOR_SERVO_PIN, REN_DOOR_CLOSED);
+}
+
+
 
 void delay(void) {
     int i;
@@ -180,6 +187,20 @@ void main(void) {
     BOARD_Init();
     printf("Running motion test harness\r\n");
     motion_init();
+    
+    while(1) {
+        motion_open_bridge_door();
+        motion_open_ren_door();
+        motion_lower_bridge();
+        printf("\r\n Doors Open");
+        delay();
+        motion_close_bridge_door();
+        motion_close_ren_door();
+        motion_raise_bridge();
+        printf("\r\n Doors Closed");
+        delay();
+    }
+    
 
     while (1) {
         motion_move(FORWARD, 100);

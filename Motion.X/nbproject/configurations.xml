@@ -4,13 +4,13 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
-      <itemPath>C:/CMPE118/include/AD.h</itemPath>
-      <itemPath>C:/CMPE118/include/BOARD.h</itemPath>
-      <itemPath>C:/CMPE118/include/serial.h</itemPath>
-      <itemPath>C:/CMPE118/include/IO_Ports.h</itemPath>
-      <itemPath>C:/CMPE118/include/pwm.h</itemPath>
-      <itemPath>C:/CMPE118/include/RC_Servo.h</itemPath>
       <itemPath>../shared/Motion.h</itemPath>
+      <itemPath>../CMPE118/include/AD.h</itemPath>
+      <itemPath>../CMPE118/include/BOARD.h</itemPath>
+      <itemPath>../CMPE118/include/IO_Ports.h</itemPath>
+      <itemPath>../CMPE118/include/RC_Servo.h</itemPath>
+      <itemPath>../CMPE118/include/pwm.h</itemPath>
+      <itemPath>../CMPE118/include/serial.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -20,13 +20,13 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
-      <itemPath>C:/CMPE118/src/AD.c</itemPath>
-      <itemPath>C:/CMPE118/src/BOARD.c</itemPath>
-      <itemPath>C:/CMPE118/src/serial.c</itemPath>
-      <itemPath>C:/CMPE118/src/IO_Ports.c</itemPath>
-      <itemPath>C:/CMPE118/src/pwm.c</itemPath>
-      <itemPath>C:/CMPE118/src/RC_Servo.c</itemPath>
       <itemPath>../shared/Motion.c</itemPath>
+      <itemPath>../CMPE118/src/AD.c</itemPath>
+      <itemPath>../CMPE118/src/BOARD.c</itemPath>
+      <itemPath>../CMPE118/src/IO_Ports.c</itemPath>
+      <itemPath>../CMPE118/src/RC_Servo.c</itemPath>
+      <itemPath>../CMPE118/src/pwm.c</itemPath>
+      <itemPath>../CMPE118/src/serial.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -38,6 +38,8 @@
     <Elem>C:\CMPE118</Elem>
     <Elem>.</Elem>
     <Elem>../shared</Elem>
+    <Elem>../CMPE118/include</Elem>
+    <Elem>../CMPE118/src</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -85,7 +87,7 @@
         <property key="enable-unroll-loops" value="false"/>
         <property key="exclude-floating-point" value="false"/>
         <property key="extra-include-directories"
-                  value=".;C:\CMPE118\include;..\shared"/>
+                  value=".;..\shared;..\CMPE118\include"/>
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
         <property key="isolate-each-function" value="false"/>

@@ -2,12 +2,16 @@
 #define MOTION_H
 
 #include "BOARD.h"
+
+
 #define FORWARD 1
 #define REVERSE 0
 
 #define MAX_SPEED 100
 #define MIN_SPEED 30
 
+
+//----- Motor Control Functions -----//
 
 void motion_init();
 
@@ -28,4 +32,19 @@ void motion_pivot_left(uint8_t dir, uint8_t speed);
 void motion_pivot_right(uint8_t dir, uint8_t speed);
 
 
-#endif //
+//----- Servo Control Functions -----//
+
+void motion_lower_bridge(void);
+
+void motion_raise_bridge(void);
+
+void motion_open_bridge_door(void);
+
+void motion_close_bridge_door(void);
+
+void motion_open_ren_door(void);
+
+void motion_close_ren_door(void);
+
+
+#endif // MOTION_H //

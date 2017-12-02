@@ -72,6 +72,10 @@ uint8_t get_tape_states(void) {
 //    return ~old_tape_states;
 }
 
+uint8_t check_tape_states(uint8_t sensor_pattern) {
+    return (sensor_pattern & ~states[NEW_INDEX]);
+}
+
 /**
  * @Function InitSimpleBumperService(uint8_t Priority)
  * @param Priority - internal variable to track which event queue to use

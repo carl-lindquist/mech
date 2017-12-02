@@ -62,6 +62,13 @@
  * @return The state of the tape sensors as a uint8_t
  */
 uint8_t get_tape_states(void);
+
+/**
+ * Convenience function which checks the sensor_pattern for tripped sensors.
+ * @param sensor_pattern a pattern of tape sensors or'd together (ex: TAPE_0)
+ * @return 1 if at least one of the sensors is tripped. 0 otherwise.
+ */
+uint8_t check_tape_states(uint8_t sensor_pattern);
  
 /**
  * @Function InitTapeService(uint8_t Priority)

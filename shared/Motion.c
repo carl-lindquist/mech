@@ -7,12 +7,18 @@
 
 #define LEFT_MOTOR_EN_PIN PWM_PORTY12
 #define RIGHT_MOTOR_EN_PIN PWM_PORTY10
+#define LIFT_MOTOR_EN_PIN PWM_PORTY04
 
 #define LEFT_MOTOR_DIR_PIN PIN11
 #define RIGHT_MOTOR_DIR_PIN PIN9
+#define LIFT_MOTOR_DIR_PIN PIN8
 
 #define LEFT_MOTOR 0
 #define RIGHT_MOTOR 1
+#define LIFT_MOTOR 2
+
+#define UP 0
+#define DOWN 1
 
 #define MOTOR_PORT PORTY
 
@@ -20,8 +26,9 @@
 #define BRIDGE_DOOR_SERVO_PIN RC_PORTX04
 #define BRIDGE_SERVO_PIN RC_PORTY06
 
-#define BRIDGE_UP 1000
-#define BRIDGE_DOWN 2100
+#define BRIDGE_UP 600
+#define BRIDGE_DOWN 1575
+#define BRIDGE_COMPACT 2500
 #define BRIDGE_DOOR_OPEN 1700
 #define BRIDGE_DOOR_CLOSED 1300
 #define REN_DOOR_OPEN 1200
@@ -35,19 +42,24 @@ uint8_t correct_speed(uint8_t speed);
 
 
 void motion_init(void) {
+    IO_PortsSetPortOutputs(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
+    IO_PortsSetPortOutputs(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+    IO_PortsSetPortOutputs(MOTOR_PORT, LIFT_MOTOR_DIR_PIN);
+    
     PWM_Init();
     PWM_AddPins(LEFT_MOTOR_EN_PIN);
     PWM_AddPins(RIGHT_MOTOR_EN_PIN);
-    PWM_SetDutyCycle(LEFT_MOTOR_EN_PIN, 0);
-    PWM_SetDutyCycle(RIGHT_MOTOR_EN_PIN, 0);
+    PWM_AddPins(LIFT_MOTOR_EN_PIN);
+    motion_stop();
+    motion_stop_lift();
     
     RC_Init();
     RC_AddPins(REN_DOOR_SERVO_PIN);
     RC_AddPins(BRIDGE_DOOR_SERVO_PIN);
     RC_AddPins(BRIDGE_SERVO_PIN);
-    
-    IO_PortsSetPortOutputs(MOTOR_PORT, LEFT_MOTOR_DIR_PIN);
-    IO_PortsSetPortOutputs(MOTOR_PORT, RIGHT_MOTOR_DIR_PIN);
+    motion_raise_bridge();
+    motion_close_bridge_door();
+    motion_close_ren_door();
 }
 
 void motion_move(uint8_t dir, uint8_t speed) {  
@@ -114,6 +126,20 @@ void motion_pivot_right(uint8_t dir, uint8_t speed) {
     set_motor_speed(LEFT_MOTOR, correct_speed(speed));
 }
 
+void motion_raise_lift(void) {
+    set_motor_speed(LIFT_MOTOR, MAX_SPEED);
+    set_motor_direction(LIFT_MOTOR, UP);
+}
+
+void motion_lower_lift(void) {
+    set_motor_speed(LIFT_MOTOR, MAX_SPEED);
+    set_motor_direction(LIFT_MOTOR, DOWN);
+}
+
+void motion_stop_lift(void) {
+    set_motor_speed(LIFT_MOTOR, 0);
+}
+
 
 
 void motion_lower_bridge(void) {
@@ -122,6 +148,10 @@ void motion_lower_bridge(void) {
 
 void motion_raise_bridge(void) {
     RC_SetPulseTime(BRIDGE_SERVO_PIN, BRIDGE_UP);
+}
+
+void motion_compact_bridge(void) {
+    RC_SetPulseTime(BRIDGE_SERVO_PIN, BRIDGE_COMPACT);
 }
 
 void motion_open_bridge_door(void) {
@@ -144,13 +174,20 @@ void motion_close_ren_door(void) {
 
 void delay(void) {
     int i;
-    for (i = 0; i < 8000000; i++);
+    for (i = 0; i < 1000000; i++);
 }
 
 //---------- Private Functions ----------//
 
 void set_motor_direction(uint8_t motor, uint8_t direction) {
-    uint16_t pin = (motor == LEFT_MOTOR ? LEFT_MOTOR_DIR_PIN : RIGHT_MOTOR_DIR_PIN);
+    uint16_t pin;
+    if (motor == LEFT_MOTOR) {
+        pin = LEFT_MOTOR_DIR_PIN;
+    } else if (motor == RIGHT_MOTOR) {
+        pin = RIGHT_MOTOR_DIR_PIN;
+    } else {
+        pin = LIFT_MOTOR_DIR_PIN;
+    }
     
     if (direction == FORWARD && motor == LEFT_MOTOR) {
         IO_PortsSetPortBits(MOTOR_PORT, pin);
@@ -162,10 +199,25 @@ void set_motor_direction(uint8_t motor, uint8_t direction) {
     } else if (direction == REVERSE && motor == RIGHT_MOTOR) {
         IO_PortsSetPortBits(MOTOR_PORT, pin);
     }
+    
+    if (direction == UP && motor == LIFT_MOTOR) {
+        printf("\r\n UP");
+        IO_PortsClearPortBits(MOTOR_PORT, pin);
+    } else if (direction == DOWN && motor == LIFT_MOTOR) {
+        printf("\r\n DOWN");
+        IO_PortsSetPortBits(MOTOR_PORT, pin);
+    }
 }
 
 void set_motor_speed(uint8_t motor, uint8_t speed) {
-    uint16_t pin = (motor == LEFT_MOTOR ? LEFT_MOTOR_EN_PIN : RIGHT_MOTOR_EN_PIN);
+    uint16_t pin;
+    if (motor == LEFT_MOTOR) {
+        pin = LEFT_MOTOR_EN_PIN;
+    } else if (motor == RIGHT_MOTOR) {
+        pin = RIGHT_MOTOR_EN_PIN;
+    } else {
+        pin = LIFT_MOTOR_EN_PIN;
+    }
     PWM_SetDutyCycle(pin, speed * 10);
 }
 
@@ -185,22 +237,34 @@ uint8_t correct_speed(uint8_t speed) {
 
 void main(void) {
     BOARD_Init();
-    printf("Running motion test harness\r\n");
+    printf("\r\nRunning motion test harness");
     motion_init();
     
     while(1) {
-        motion_open_bridge_door();
-        motion_open_ren_door();
-        motion_lower_bridge();
-        printf("\r\n Doors Open");
+        motion_raise_lift();
+        printf("\r\nRaise Lift");
         delay();
-        motion_close_bridge_door();
-        motion_close_ren_door();
-        motion_raise_bridge();
-        printf("\r\n Doors Closed");
+        motion_lower_lift();
+        printf("\r\nLower Lift");
+        delay();
+        motion_stop_lift();
+        printf("\r\nStop Lift");
         delay();
     }
     
+    motion_open_bridge_door();
+    motion_open_ren_door();
+    motion_lower_bridge();
+    printf("\r\n Doors Open");
+    delay();
+    motion_close_bridge_door();
+    motion_close_ren_door();
+    motion_raise_bridge();
+    printf("\r\n Doors Closed");
+    delay();
+    motion_compact_bridge();
+    printf("\r\n Bridge Compacted");
+    delay();
 
     while (1) {
         motion_move(FORWARD, 100);

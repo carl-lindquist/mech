@@ -36,7 +36,7 @@
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
 
-#define MINPULSE 1000
+#define MINPULSE 600
 #define MAXPULSE 2500
 
 #define RC_PORTX03 0x001

@@ -31,6 +31,12 @@ void motion_pivot_left(uint8_t dir, uint8_t speed);
 
 void motion_pivot_right(uint8_t dir, uint8_t speed);
 
+void motion_raise_lift(void);
+
+void motion_lower_lift(void);
+
+void motion_stop_lift(void);
+
 
 //----- Servo Control Functions -----//
 

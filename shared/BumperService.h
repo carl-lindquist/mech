@@ -24,6 +24,23 @@
  * PUBLIC #DEFINES                                                             *
  ******************************************************************************/
 
+#define BUMPER_0 0x01 
+#define BUMPER_1 0x02
+#define BUMPER_2 0x04
+#define BUMPER_3 0x08
+#define BUMPER_4 0x10
+
+#define BUMPER_0_PRESSED 0x0001
+#define BUMPER_1_PRESSED 0x0002
+#define BUMPER_2_PRESSED 0x0004
+#define BUMPER_3_PRESSED 0x0008
+#define BUMPER_4_PRESSED 0x0010
+
+#define BUMPER_0_RELEASED 0x0020
+#define BUMPER_1_RELEASED 0x0040
+#define BUMPER_2_RELEASED 0x0080
+#define BUMPER_3_RELEASED 0x0100
+#define BUMPER_4_RELEASED 0x0200
 
 /*******************************************************************************
  * PUBLIC TYPEDEFS                                                             *
@@ -34,6 +51,7 @@
  * PUBLIC FUNCTION PROTOTYPES                                                  *
  ******************************************************************************/
 
+uint8_t check_bumper_states(uint8_t sensor_pattern);
  
 /**
  * @Function InitBumperService(uint8_t Priority)

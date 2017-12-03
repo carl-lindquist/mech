@@ -26,7 +26,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define SERVICE_TIMER_TICKS 100
+#define SERVICE_TIMER_TICKS 5
 
 #define BUMPER_PORT PORTZ
 #define BUMPER_PIN_0 PIN3
@@ -59,10 +59,16 @@ uint8_t read_bumpers(void);
  * as well. */
 
 static uint8_t MyPriority;
+static uint8_t states[DEBOUNCE_ARRAY_SIZE];
 
 /*******************************************************************************
  * PUBLIC FUNCTIONS                                                            *
  ******************************************************************************/
+
+uint8_t check_bumper_states(uint8_t sensor_pattern) {
+    return (sensor_pattern & states[NEW_INDEX]);
+}
+
 
 /**
  * @Function InitSimpleBumperService(uint8_t Priority)
@@ -114,7 +120,7 @@ uint8_t PostBumperService(ES_Event ThisEvent) {
  *       Returns ES_NO_EVENT if the event have been "consumed." 
  * @author J. Edward Carryer, 2011.10.23 19:25 */
 ES_Event RunBumperService(ES_Event ThisEvent) {
-static uint8_t states[DEBOUNCE_ARRAY_SIZE];
+
     ES_Event ReturnEvent;
     ReturnEvent.EventType = ES_NO_EVENT; // assume no errors
 
@@ -167,7 +173,6 @@ static uint8_t states[DEBOUNCE_ARRAY_SIZE];
                 ReturnEvent.EventType = currentEventType;
                 ReturnEvent.EventParam = currentEventParam;
                 
-                
                 #ifdef BUMPER_SERVICE_TEST
                     printf("\r\nEvent: %s\tParam: 0x%X",
                         EventNames[ReturnEvent.EventType], ReturnEvent.EventParam);
@@ -187,9 +192,9 @@ static uint8_t states[DEBOUNCE_ARRAY_SIZE];
  ******************************************************************************/
 
 uint8_t read_bumpers(void) {
-    uint8_t states = 0;
-    states = IO_PortsReadPort(BUMPER_PORT) & ALL_BUMPER_PINS;
-    states = states >> 3; // shift pins to be zero indexed
+    uint16_t new_states = 0;
+    new_states = IO_PortsReadPort(BUMPER_PORT) & ALL_BUMPER_PINS;
+    new_states = new_states >> 3; // shift pins to be zero indexed
     
-    return states;
+    return (uint8_t)new_states;
 }

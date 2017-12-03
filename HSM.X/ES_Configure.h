@@ -53,6 +53,9 @@ typedef enum {
     TRACKWIRE_FOUND,
     TRACKWIRE_LOST,
     TRACKWIRE_ALIGNED,
+    MOTION_LIFT_COMPLETE,
+    MOTION_LIFT_DOWN,
+    MOTION_LIFT_UP,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -74,6 +77,9 @@ static const char *EventNames[] = {
 	"TRACKWIRE_FOUND",
 	"TRACKWIRE_LOST",
 	"TRACKWIRE_ALIGNED",
+	"MOTION_LIFT_COMPLETE",
+	"MOTION_LIFT_DOWN",
+	"MOTION_LIFT_UP",
 };
 
 
@@ -95,7 +101,7 @@ static const char *EventNames[] = {
 #define TIMER2_RESP_FUNC PostTrackwireService
 #define TIMER3_RESP_FUNC PostHSM
 #define TIMER4_RESP_FUNC PostHSM
-#define TIMER5_RESP_FUNC TIMER_UNUSED
+#define TIMER5_RESP_FUNC PostHSM
 #define TIMER6_RESP_FUNC TIMER_UNUSED
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
@@ -119,6 +125,7 @@ static const char *EventNames[] = {
 #define TRACKWIRE_SERVICE_TIMER 2
 #define FRUSTRATION_TIMER 3
 #define TURN_TIMER 4
+#define LIFT_TIMER 5
 
 
 /****************************************************************************/
@@ -195,7 +202,7 @@ static const char *EventNames[] = {
 // the name of the run function
 #define SERV_4_RUN RunHSM
 // How big should this services Queue be?
-#define SERV_4_QUEUE_SIZE 3
+#define SERV_4_QUEUE_SIZE 9
 #endif
 
 /****************************************************************************/

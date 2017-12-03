@@ -45,7 +45,7 @@
  ******************************************************************************/
 
 #define INIT_TICKS 100
-#define DOWN_TO_UP_TICKS 500
+#define DOWN_TO_UP_TICKS 2000
 
 
 /*******************************************************************************
@@ -142,6 +142,8 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     // now put the machine into the actual initial state
                     if (check_bumper_states(BUMPER_4)) {
                         nextState = Down;
+                        NewEvent.EventType = MOTION_LIFT_COMPLETE;
+                        PostHSM(NewEvent);
                     } else {
                         nextState = FindOrigin;
                     }

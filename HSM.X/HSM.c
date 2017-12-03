@@ -53,6 +53,7 @@ typedef enum {
     LiftToOrigin,
     Idle,        
     Orient,
+    RaiseLift,
     FollowTape,
     KillATM6,
 } HSMState_t;
@@ -62,6 +63,7 @@ static const char *StateNames[] = {
 	"LiftToOrigin",
 	"Idle",
 	"Orient",
+	"RaiseLift",
 	"FollowTape",
 	"KillATM6",
 };
@@ -81,6 +83,7 @@ static const char *StateNames[] = {
 
 static HSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
+static ES_Event NewEvent; // used for posting to self
 
 
 /*******************************************************************************
@@ -176,12 +179,34 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             }
             break;
             
+        case RaiseLift:
+            // run sub-state machine for this state
+            ThisEvent = RunLiftControlSSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case MOTION_LIFT_COMPLETE:
+                    NewEvent.EventType = MOTION_LIFT_DOWN;
+                    PostHSM(NewEvent);
+                    nextState = Idle;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default:
+                    break;
+            }
+            break;
+            
         case Idle:
             // run sub-state machine for this state
+            ThisEvent = RunLiftControlSSM(ThisEvent);
             switch (ThisEvent.EventType) {
+                
                 case BUMPER_PRESSED:
                     if (ThisEvent.EventParam == BUMPER_0_PRESSED) {
-                        nextState = FollowTape;
+                        NewEvent.EventType = MOTION_LIFT_UP;
+                        PostHSM(NewEvent);
+                        nextState = RaiseLift;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }

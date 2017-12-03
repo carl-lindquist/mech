@@ -201,10 +201,8 @@ void set_motor_direction(uint8_t motor, uint8_t direction) {
     }
     
     if (direction == UP && motor == LIFT_MOTOR) {
-        printf("\r\n UP");
         IO_PortsClearPortBits(MOTOR_PORT, pin);
     } else if (direction == DOWN && motor == LIFT_MOTOR) {
-        printf("\r\n DOWN");
         IO_PortsSetPortBits(MOTOR_PORT, pin);
     }
 }

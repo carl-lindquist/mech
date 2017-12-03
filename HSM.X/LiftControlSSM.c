@@ -69,6 +69,7 @@ typedef enum {
     Down,
     Up,
     FindOrigin,
+    MoveToRen,
 } LiftControlSSMState_t;
 
 static const char *StateNames[] = {
@@ -76,6 +77,7 @@ static const char *StateNames[] = {
 	"Down",
 	"Up",
 	"FindOrigin",
+	"MoveToRen",
 };
 
 
@@ -138,17 +140,17 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
             } else if (ThisEvent.EventType == ES_TIMEOUT) {
                 if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
                     // now put the machine into the actual initial state
-                if (check_bumper_states(BUMPER_4)) {
-                    nextState = Down;
-                } else {
-                    nextState = FindOrigin;
-                }
-                makeTransition = TRUE;
-                ThisEvent.EventType = ES_NO_EVENT;
+                    if (check_bumper_states(BUMPER_4)) {
+                        nextState = Down;
+                    } else {
+                        nextState = FindOrigin;
+                    }
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
                 }
             }
             break;
-        
+
 
         case FindOrigin:
             switch (ThisEvent.EventType) {
@@ -157,6 +159,9 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     break;
                 case BUMPER_PRESSED:
                     if (ThisEvent.EventParam & BUMPER_4_PRESSED) {
+                        
+                        NewEvent.EventType = MOTION_LIFT_COMPLETE;
+                        PostHSM(NewEvent);
                         nextState = Down;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -167,23 +172,17 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     break;
             }
             break;
-            
-        case Down:
+
+        case MoveToRen:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    NewEvent.EventType = MOTION_LIFT_COMPLETE;
-                    PostHSM(NewEvent);
-                    motion_stop_lift();
-                    break;
-                    
-                case MOTION_LIFT_UP:
                     ES_Timer_InitTimer(LIFT_TIMER, DOWN_TO_UP_TICKS);
                     motion_raise_lift();
-                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
-                            
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == LIFT_TIMER) {
+                        NewEvent.EventType = MOTION_LIFT_COMPLETE;
+                        PostHSM(NewEvent);
                         nextState = Up;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -195,20 +194,38 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     break;
             }
             break;
-            
+
+        case Down:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_stop_lift();
+                    break;
+
+                case MOTION_LIFT_UP:
+                    nextState = MoveToRen;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
         case Up:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
+                    motion_stop_lift();
                     NewEvent.EventType = MOTION_LIFT_COMPLETE;
                     PostHSM(NewEvent);
-                    motion_stop_lift();
                     break;
-                    
+
                 case MOTION_LIFT_DOWN:
                     nextState = FindOrigin;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
-                    
+
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;

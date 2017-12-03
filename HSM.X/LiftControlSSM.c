@@ -44,6 +44,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
+#define INIT_TICKS 100
 #define DOWN_TO_UP_TICKS 500
 
 
@@ -65,7 +66,6 @@ static ES_Event NewEvent;
 
 typedef enum {
     InitPState,
-    Idle,
     Down,
     Up,
     FindOrigin,
@@ -73,7 +73,6 @@ typedef enum {
 
 static const char *StateNames[] = {
 	"InitPState",
-	"Idle",
 	"Down",
 	"Up",
 	"FindOrigin",
@@ -135,8 +134,10 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                 // this is where you would put any actions associated with the
                 // transition from the initial pseudo-state into the actual
                 // initial state
-
-                // now put the machine into the actual initial state
+                ES_Timer_InitTimer(FRUSTRATION_TIMER, INIT_TICKS);
+            } else if (ThisEvent.EventType == ES_TIMEOUT) {
+                if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                    // now put the machine into the actual initial state
                 if (check_bumper_states(BUMPER_4)) {
                     nextState = Down;
                 } else {
@@ -144,23 +145,10 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                 }
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
+                }
             }
             break;
-            
-        case Idle:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_stop_lift();
-                    break;
-                    
-                case MOTION_LIFT_DOWN:
-                    break;
-                    
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
+        
 
         case FindOrigin:
             switch (ThisEvent.EventType) {

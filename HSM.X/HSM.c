@@ -50,6 +50,7 @@
 
 typedef enum {
     InitPState,
+    LiftToOrigin,
     Idle,        
     Orient,
     FollowTape,
@@ -58,6 +59,7 @@ typedef enum {
 
 static const char *StateNames[] = {
 	"InitPState",
+	"LiftToOrigin",
 	"Idle",
 	"Orient",
 	"FollowTape",
@@ -150,11 +152,27 @@ ES_Event RunHSM(ES_Event ThisEvent) {
                 // initial state
                 // Initialize all sub-state machines
                 InitFollowTapeSSM();
+                InitLiftControlSSM();
                 // now put the machine into the actual initial state
-                nextState = Idle;
+                nextState = LiftToOrigin;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
-                ;
+            }
+            break;
+            
+        case LiftToOrigin:
+            // run sub-state machine for this state
+            ThisEvent = RunLiftControlSSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case MOTION_LIFT_COMPLETE:
+                    nextState = Idle;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default:
+                    break;
             }
             break;
             
@@ -163,8 +181,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case BUMPER_PRESSED:
                     if (ThisEvent.EventParam == BUMPER_0_PRESSED) {
-                        nextState = Orient;
-                        InitLiftControlSSM();
+                        nextState = FollowTape;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }

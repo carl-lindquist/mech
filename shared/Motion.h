@@ -8,7 +8,7 @@
 #define REVERSE 0
 
 #define MAX_SPEED 100
-#define MIN_SPEED 30
+#define MIN_SPEED 21
 
 
 //----- Motor Control Functions -----//

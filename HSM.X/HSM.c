@@ -35,6 +35,7 @@
 #include "HSM.h"
 #include "FollowTapeSSM.h" //#include all sub state machines called
 #include "LiftControlSSM.h"
+#include "KillATM6SSM.h"
 
 #include "Motion.h"
 
@@ -51,9 +52,7 @@
 typedef enum {
     InitPState,
     LiftToOrigin,
-    Idle,        
-    Orient,
-    RaiseLift,
+            Idle,
     FollowTape,
     KillATM6,
 } HSMState_t;
@@ -62,8 +61,6 @@ static const char *StateNames[] = {
 	"InitPState",
 	"LiftToOrigin",
 	"Idle",
-	"Orient",
-	"RaiseLift",
 	"FollowTape",
 	"KillATM6",
 };
@@ -154,7 +151,8 @@ ES_Event RunHSM(ES_Event ThisEvent) {
                 // transition from the initial pseudo-state into the actual
                 // initial state
                 // Initialize all sub-state machines
-                InitFollowTapeSSM();
+                motion_compact_bridge();
+                
                 InitLiftControlSSM();
                 // now put the machine into the actual initial state
                 nextState = LiftToOrigin;
@@ -179,56 +177,15 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             }
             break;
             
-        case RaiseLift:
-            // run sub-state machine for this state
-            ThisEvent = RunLiftControlSSM(ThisEvent);
-            switch (ThisEvent.EventType) {
-                case MOTION_LIFT_COMPLETE:
-                    NewEvent.EventType = MOTION_LIFT_DOWN;
-                    PostHSM(NewEvent);
-                    nextState = Idle;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
-            
         case Idle:
-            // run sub-state machine for this state
-            ThisEvent = RunLiftControlSSM(ThisEvent);
             switch (ThisEvent.EventType) {
-                
                 case BUMPER_PRESSED:
-                    if (ThisEvent.EventParam == BUMPER_0_PRESSED) {
-                        NewEvent.EventType = MOTION_LIFT_UP;
-                        PostHSM(NewEvent);
-                        nextState = RaiseLift;
+                    if (ThisEvent.EventParam & BUMPER_0_PRESSED) {
+                        InitFollowTapeSSM();
+                        nextState = FollowTape;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
-                    break;
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
-            
-        case Orient:
-            // run sub-state machine for this state
-            //NOTE: the SubState Machine runs and responds to events before anything in the this
-            //state machine does
-            ThisEvent = RunLiftControlSSM(ThisEvent);
-            switch (ThisEvent.EventType) {
-
-                case MOTION_LIFT_COMPLETE:
-                    nextState = FollowTape;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
                 case ES_NO_EVENT:
@@ -245,6 +202,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
 
                 case TRACKWIRE_ALIGNED:
+                    InitKillATM6SSM();
                     nextState = KillATM6;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
@@ -258,10 +216,13 @@ ES_Event RunHSM(ES_Event ThisEvent) {
 
 
         case KillATM6:
+            ThisEvent = RunKillATM6SSM(ThisEvent);
             switch (ThisEvent.EventType) {
-
-                case ES_ENTRY:
-                    motion_stop();
+                case ATM6_DESTROYED:
+                    InitFollowTapeSSM();
+                    nextState = FollowTape;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
                 case ES_NO_EVENT:

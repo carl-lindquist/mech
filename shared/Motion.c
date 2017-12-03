@@ -26,10 +26,10 @@
 #define BRIDGE_DOOR_SERVO_PIN RC_PORTX04
 #define BRIDGE_SERVO_PIN RC_PORTY06
 
-#define BRIDGE_UP 600
-#define BRIDGE_DOWN 1575
+#define BRIDGE_UP 700
+#define BRIDGE_DOWN 1800
 #define BRIDGE_COMPACT 2500
-#define BRIDGE_DOOR_OPEN 1700
+#define BRIDGE_DOOR_OPEN 2000
 #define BRIDGE_DOOR_CLOSED 1300
 #define REN_DOOR_OPEN 1200
 #define REN_DOOR_CLOSED 1600
@@ -238,31 +238,33 @@ void main(void) {
     printf("\r\nRunning motion test harness");
     motion_init();
     
-    while(1) {
-        motion_raise_lift();
-        printf("\r\nRaise Lift");
-        delay();
-        motion_lower_lift();
-        printf("\r\nLower Lift");
-        delay();
-        motion_stop_lift();
-        printf("\r\nStop Lift");
-        delay();
-    }
+//    while(1) {
+//        motion_raise_lift();
+//        printf("\r\nRaise Lift");
+//        delay();
+//        motion_lower_lift();
+//        printf("\r\nLower Lift");
+//        delay();
+//        motion_stop_lift();
+//        printf("\r\nStop Lift");
+//        delay();
+//    }
     
-    motion_open_bridge_door();
-    motion_open_ren_door();
-    motion_lower_bridge();
-    printf("\r\n Doors Open");
-    delay();
-    motion_close_bridge_door();
-    motion_close_ren_door();
-    motion_raise_bridge();
-    printf("\r\n Doors Closed");
-    delay();
-    motion_compact_bridge();
-    printf("\r\n Bridge Compacted");
-    delay();
+//    while(1) {
+//        motion_open_bridge_door();
+//        motion_open_ren_door();
+//        motion_lower_bridge();
+//        printf("\r\n Doors Open");
+//        delay();
+//        motion_close_bridge_door();
+//        motion_close_ren_door();
+//        motion_raise_bridge();
+//        printf("\r\n Doors Closed");
+//        delay();
+//        motion_compact_bridge();
+//        printf("\r\n Bridge Compacted");
+//        delay();
+//    }
 
     while (1) {
         motion_move(FORWARD, 100);

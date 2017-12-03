@@ -56,6 +56,7 @@ typedef enum {
     MOTION_LIFT_COMPLETE,
     MOTION_LIFT_DOWN,
     MOTION_LIFT_UP,
+    ATM6_DESTROYED,
 } ES_EventTyp_t;
 
 static const char *EventNames[] = {
@@ -80,6 +81,7 @@ static const char *EventNames[] = {
 	"MOTION_LIFT_COMPLETE",
 	"MOTION_LIFT_DOWN",
 	"MOTION_LIFT_UP",
+	"ATM6_DESTROYED",
 };
 
 
@@ -125,7 +127,7 @@ static const char *EventNames[] = {
 #define TRACKWIRE_SERVICE_TIMER 2
 #define FRUSTRATION_TIMER 3
 #define TURN_TIMER 4
-#define LIFT_TIMER 5
+#define MOTION_TIMER 5
 
 
 /****************************************************************************/

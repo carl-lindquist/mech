@@ -178,11 +178,11 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
         case MoveToRen:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    ES_Timer_InitTimer(LIFT_TIMER, DOWN_TO_UP_TICKS);
+                    ES_Timer_InitTimer(MOTION_TIMER, DOWN_TO_UP_TICKS);
                     motion_raise_lift();
                     break;
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == LIFT_TIMER) {
+                    if (ThisEvent.EventParam == MOTION_TIMER) {
                         NewEvent.EventType = MOTION_LIFT_COMPLETE;
                         PostHSM(NewEvent);
                         nextState = Up;

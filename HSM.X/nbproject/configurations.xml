@@ -33,6 +33,7 @@
       <itemPath>LiftControlSSM.h</itemPath>
       <itemPath>KillATM6SSM.h</itemPath>
       <itemPath>../shared/BeaconService.h</itemPath>
+      <itemPath>BootupSSM.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -65,6 +66,7 @@
       <itemPath>LiftControlSSM.c</itemPath>
       <itemPath>KillATM6SSM.c</itemPath>
       <itemPath>../shared/BeaconService.c</itemPath>
+      <itemPath>BootupSSM.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

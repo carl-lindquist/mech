@@ -44,7 +44,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define FRUSTRATION_TICKS  5000
+#define FRUSTRATION_TICKS 5000
 #define TAPE_ADJUST_TICKS 400
 
 
@@ -85,6 +85,9 @@ static const char *StateNames[] = {
 
 static FollowTapeSSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
+
+static uint8_t found_tape_once;
+
 
 
 /*******************************************************************************
@@ -156,20 +159,31 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_move(FORWARD, 40);
+                    found_tape_once = 0;
                     break;
                 case TAPE_SENSOR_TRIPPED:
-                    if ((ThisEvent.EventParam & TAPE_0_TRIPPED) || (ThisEvent.EventParam & TAPE_2_TRIPPED)) {
-                        if (check_tape_states(TAPE_1)) {
-                            nextState = ShallowAlign;
+                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                        found_tape_once = 1;
+                    }
+                    if (ThisEvent.EventParam & TAPE_0_TRIPPED) {
+                        if (found_tape_once) {
+                            nextState = Align; // Steep alignment angle
                         } else {
-                            nextState = Align;
+                            nextState = ShallowAlign;
                         }
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     } else if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-                        nextState = ShallowAlign;
+                        if (check_tape_states(TAPE_1)) {
+                            nextState = ShallowAlign;
+                        } else if (found_tape_once) {
+                            nextState = Align; // Steep alignment angle
+                        } else {
+                            nextState = ShallowAlign;
+                        }
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
+                        break;
                     }
                     break;
                 case ES_NO_EVENT:
@@ -205,13 +219,13 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
                     break;
             }
             break;
-            
+
         case ShallowAlign:
-            switch(ThisEvent.EventType) {
-            case ES_ENTRY:
-                motion_tank_left();
-                break;
-                
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_tank_left();
+                    break;
+
                 case TAPE_SENSOR_TRIPPED:
                     if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
                         nextState = AdjustRight;

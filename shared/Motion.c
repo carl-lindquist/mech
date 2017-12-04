@@ -27,7 +27,7 @@
 #define BRIDGE_SERVO_PIN RC_PORTY06
 
 #define BRIDGE_UP 800
-#define BRIDGE_DOWN 1900
+#define BRIDGE_DOWN 2100
 #define BRIDGE_COMPACT 2500
 #define BRIDGE_DOOR_OPEN 2000
 #define BRIDGE_DOOR_CLOSED 1300
@@ -82,8 +82,8 @@ void motion_tank_left() {
     set_motor_direction(LEFT_MOTOR, REVERSE);
     set_motor_direction(RIGHT_MOTOR, FORWARD);
     
-    set_motor_speed(LEFT_MOTOR, 35);
-    set_motor_speed(RIGHT_MOTOR, 35);
+    set_motor_speed(LEFT_MOTOR, 45);
+    set_motor_speed(RIGHT_MOTOR, 45);
 }
 
 void motion_tank_right() {
@@ -91,8 +91,8 @@ void motion_tank_right() {
     set_motor_direction(LEFT_MOTOR, FORWARD);
     set_motor_direction(RIGHT_MOTOR, REVERSE);
     
-    set_motor_speed(LEFT_MOTOR, 35);
-    set_motor_speed(RIGHT_MOTOR, 35);
+    set_motor_speed(LEFT_MOTOR, 45);
+    set_motor_speed(RIGHT_MOTOR, 45);
 }
 
 void motion_bank_left(uint8_t dir) {

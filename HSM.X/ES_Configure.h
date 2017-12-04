@@ -53,6 +53,8 @@ typedef enum {
     TRACKWIRE_FOUND,
     TRACKWIRE_LOST,
     TRACKWIRE_ALIGNED,
+    BEACON_LOST,
+    BEACON_FOUND,
     MOTION_LIFT_COMPLETE,
     MOTION_LIFT_DOWN,
     MOTION_LIFT_UP,
@@ -78,6 +80,8 @@ static const char *EventNames[] = {
 	"TRACKWIRE_FOUND",
 	"TRACKWIRE_LOST",
 	"TRACKWIRE_ALIGNED",
+	"BEACON_LOST",
+	"BEACON_FOUND",
 	"MOTION_LIFT_COMPLETE",
 	"MOTION_LIFT_DOWN",
 	"MOTION_LIFT_UP",
@@ -101,10 +105,10 @@ static const char *EventNames[] = {
 #define TIMER0_RESP_FUNC PostTapeSensorService 
 #define TIMER1_RESP_FUNC PostBumperService
 #define TIMER2_RESP_FUNC PostTrackwireService
-#define TIMER3_RESP_FUNC PostHSM
+#define TIMER3_RESP_FUNC PostBeaconService
 #define TIMER4_RESP_FUNC PostHSM
 #define TIMER5_RESP_FUNC PostHSM
-#define TIMER6_RESP_FUNC TIMER_UNUSED
+#define TIMER6_RESP_FUNC PostHSM
 #define TIMER7_RESP_FUNC TIMER_UNUSED
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
@@ -125,9 +129,10 @@ static const char *EventNames[] = {
 #define TAPE_SENSOR_SERVICE_TIMER 0
 #define BUMPER_SERVICE_TIMER 1
 #define TRACKWIRE_SERVICE_TIMER 2
-#define FRUSTRATION_TIMER 3
-#define TURN_TIMER 4
-#define MOTION_TIMER 5
+#define BEACON_SERVICE_TIMER 3
+#define FRUSTRATION_TIMER 4
+#define TURN_TIMER 5
+#define MOTION_TIMER 6
 
 
 /****************************************************************************/
@@ -139,7 +144,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 5
+#define NUM_SERVICES 6
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
 // every Events and Services application must have a Service 0. Further 
@@ -198,11 +203,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public fuction prototypes
-#define SERV_4_HEADER "HSM.h"
+#define SERV_4_HEADER "BeaconService.h"
 // the name of the Init function
-#define SERV_4_INIT InitHSM
+#define SERV_4_INIT InitBeaconService
 // the name of the run function
-#define SERV_4_RUN RunHSM
+#define SERV_4_RUN RunBeaconService
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 9
 #endif
@@ -211,11 +216,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 5
 #if NUM_SERVICES > 5
 // the header file with the public fuction prototypes
-#define SERV_5_HEADER "TestService.h"
+#define SERV_5_HEADER "HSM.h"
 // the name of the Init function
-#define SERV_5_INIT TestServiceInit
+#define SERV_5_INIT InitHSM
 // the name of the run function
-#define SERV_5_RUN TestServiceRun
+#define SERV_5_RUN RunHSM
 // How big should this services Queue be?
 #define SERV_5_QUEUE_SIZE 3
 #endif

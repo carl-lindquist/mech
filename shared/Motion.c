@@ -26,13 +26,13 @@
 #define BRIDGE_DOOR_SERVO_PIN RC_PORTX04
 #define BRIDGE_SERVO_PIN RC_PORTY06
 
-#define BRIDGE_UP 700
-#define BRIDGE_DOWN 1800
+#define BRIDGE_UP 800
+#define BRIDGE_DOWN 1900
 #define BRIDGE_COMPACT 2500
 #define BRIDGE_DOOR_OPEN 2000
 #define BRIDGE_DOOR_CLOSED 1300
 #define REN_DOOR_OPEN 1200
-#define REN_DOOR_CLOSED 1600
+#define REN_DOOR_CLOSED 1700
 
 
 //---------- Private Prototypes ----------//

@@ -151,8 +151,6 @@ ES_Event RunHSM(ES_Event ThisEvent) {
                 // transition from the initial pseudo-state into the actual
                 // initial state
                 // Initialize all sub-state machines
-                motion_compact_bridge();
-                
                 InitLiftControlSSM();
                 // now put the machine into the actual initial state
                 nextState = LiftToOrigin;
@@ -166,6 +164,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             ThisEvent = RunLiftControlSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case MOTION_LIFT_COMPLETE:
+                    motion_compact_bridge();
                     nextState = Idle;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
@@ -182,6 +181,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
                 case BUMPER_PRESSED:
                     if (ThisEvent.EventParam & BUMPER_0_PRESSED) {
                         InitFollowTapeSSM();
+                        motion_raise_bridge();
                         nextState = FollowTape;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;

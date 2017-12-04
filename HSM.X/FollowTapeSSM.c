@@ -66,6 +66,7 @@ typedef enum {
     InitPState,
     FindTape,
     Align,
+    ShallowAlign,
     CornerReverse,
     AdjustLeft,
     AdjustRight,
@@ -75,6 +76,7 @@ static const char *StateNames[] = {
 	"InitPState",
 	"FindTape",
 	"Align",
+	"ShallowAlign",
 	"CornerReverse",
 	"AdjustLeft",
 	"AdjustRight",
@@ -138,8 +140,10 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
                 // initial state
 
                 // now put the machine into the actual initial state
-                if (get_tape_states() & TAPE_1) {
+                if (check_tape_states(TAPE_1)) {
                     nextState = Align;
+                } else if (check_tape_states(TAPE_0)) {
+                    nextState = AdjustLeft;
                 } else {
                     nextState = FindTape;
                 }
@@ -151,11 +155,19 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
         case FindTape:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    motion_move(FORWARD, 35);
+                    motion_move(FORWARD, 40);
                     break;
                 case TAPE_SENSOR_TRIPPED:
                     if ((ThisEvent.EventParam & TAPE_0_TRIPPED) || (ThisEvent.EventParam & TAPE_2_TRIPPED)) {
-                        nextState = Align;
+                        if (check_tape_states(TAPE_1)) {
+                            nextState = ShallowAlign;
+                        } else {
+                            nextState = Align;
+                        }
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    } else if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
+                        nextState = ShallowAlign;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -190,6 +202,22 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
                     break;
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+            
+        case ShallowAlign:
+            switch(ThisEvent.EventType) {
+            case ES_ENTRY:
+                motion_tank_left();
+                break;
+                
+                case TAPE_SENSOR_TRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
+                        nextState = AdjustRight;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
             }
             break;

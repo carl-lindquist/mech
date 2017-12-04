@@ -51,6 +51,8 @@ typedef enum {
     TRACKWIRE_FOUND,
     TRACKWIRE_ALIGNED,
     TRACKWIRE_LOST,
+    BEACON_LOST,
+    BEACON_FOUND,
     NUMBEROFEVENTS,
 } ES_EventTyp_t;
 
@@ -72,6 +74,8 @@ static const char *EventNames[] = {
 	"TRACKWIRE_FOUND",
 	"TRACKWIRE_ALIGNED",
 	"TRACKWIRE_LOST",
+	"BEACON_LOST",
+	"BEACON_FOUND",
 	"NUMBEROFEVENTS",
 };
 
@@ -92,7 +96,7 @@ static const char *EventNames[] = {
 #define TIMER0_RESP_FUNC PostTapeSensorService
 #define TIMER1_RESP_FUNC PostBumperService
 #define TIMER2_RESP_FUNC PostTrackwireService
-#define TIMER3_RESP_FUNC TIMER_UNUSED
+#define TIMER3_RESP_FUNC PostBeaconService
 #define TIMER4_RESP_FUNC TIMER_UNUSED
 #define TIMER5_RESP_FUNC TIMER_UNUSED
 #define TIMER6_RESP_FUNC TIMER_UNUSED
@@ -116,6 +120,8 @@ static const char *EventNames[] = {
 #define TAPE_SENSOR_SERVICE_TIMER 0 /*make sure this is enabled above and posting to the correct state machine*/
 #define BUMPER_SERVICE_TIMER 1
 #define TRACKWIRE_SERVICE_TIMER 2
+#define BEACON_SERVICE_TIMER 3
+
 
 
 /****************************************************************************/
@@ -127,7 +133,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 4
+#define NUM_SERVICES 5
 
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
@@ -187,11 +193,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 4
 #if NUM_SERVICES > 4
 // the header file with the public fuction prototypes
-#define SERV_4_HEADER "TestService.h"
+#define SERV_4_HEADER "BeaconService.h"
 // the name of the Init function
-#define SERV_4_INIT TestServiceInit
+#define SERV_4_INIT InitBeaconService
 // the name of the run function
-#define SERV_4_RUN TestServiceRun
+#define SERV_4_RUN RunBeaconService
 // How big should this services Queue be?
 #define SERV_4_QUEUE_SIZE 3
 #endif

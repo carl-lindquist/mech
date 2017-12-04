@@ -26,6 +26,7 @@
       <itemPath>../shared/TapeSensorService.h</itemPath>
       <itemPath>../shared/TrackwireService.h</itemPath>
       <itemPath>../shared/BumperService.h</itemPath>
+      <itemPath>../shared/BeaconService.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -51,6 +52,7 @@
       <itemPath>../shared/TapeSensorService.c</itemPath>
       <itemPath>../shared/TrackwireService.c</itemPath>
       <itemPath>../shared/BumperService.c</itemPath>
+      <itemPath>../shared/BeaconService.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -119,7 +121,7 @@
         <property key="post-instruction-scheduling" value="default"/>
         <property key="pre-instruction-scheduling" value="default"/>
         <property key="preprocessor-macros"
-                  value="TAPE_SENSOR_SERVICE_TEST;BUMPER_SERVICE_TEST;TRACKWIRE_SERVICE_TEST"/>
+                  value="TAPE_SENSOR_SERVICE_TEST;BUMPER_SERVICE_TEST;TRACKWIRE_SERVICE_TEST;BEACON_SERVICE_TEST"/>
         <property key="strict-ansi" value="false"/>
         <property key="support-ansi" value="false"/>
         <property key="toplevel-reordering" value=""/>

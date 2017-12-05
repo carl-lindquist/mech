@@ -61,6 +61,7 @@ typedef enum {
     MOTION_LIFT_REN,
     BOOTUP_COMPLETE,
     ATM6_DESTROYED,
+    ALL_ATM6_DESTROYED,
 
 } ES_EventTyp_t;
 
@@ -91,6 +92,7 @@ static const char *EventNames[] = {
 	"MOTION_LIFT_REN",
 	"BOOTUP_COMPLETE",
 	"ATM6_DESTROYED",
+	"ALL_ATM6_DESTROYED",
 };
 
 

@@ -34,9 +34,11 @@
 #include <stdio.h>
 
 #include "HSM.h"
-#include "LiftControlSSM.h"
+#include "HuntATM6SSM.h"
 
-#include "BumperService.h"
+#include "KillATM6SSM.h"
+#include "FollowTapeSSM.h"
+
 #include "Motion.h"
 
 
@@ -44,9 +46,9 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define INIT_TICKS 100
-#define ORIGIN_TO_BEACON_DETECTION_TICKS 10000
-#define BEACON_DETECTION_TO_REN_TICKS 2000
+#define FRUSTRATION_TICKS  2000
+
+#define NINETY_DEGREE_TICKS 750
 
 
 /*******************************************************************************
@@ -60,34 +62,35 @@
  * PRIVATE MODULE VARIABLES                                                            *
  ******************************************************************************/
 
-static ES_Event NewEvent;
-
 /* You will need MyPriority and the state variable; you may need others as well.
  * The type of state variable should match that of enum in header file. */
 
 typedef enum {
     InitPState,
-    Origin,
-    BeaconDetection,
-    Ren,
-    FindOrigin,
-    MoveToBeaconDetection,
-    MoveToRen,
-} LiftControlSSMState_t;
+    ChargeRen,
+    TankRight,
+    TankLeft,
+    FollowTape,
+    KillATM6,
+    Idle,
+} HuntATM6SSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
-	"Origin",
-	"BeaconDetection",
-	"Ren",
-	"FindOrigin",
-	"MoveToBeaconDetection",
-	"MoveToRen",
+	"ChargeRen",
+	"TankRight",
+	"TankLeft",
+	"FollowTape",
+	"KillATM6",
+	"Idle",
 };
 
 
-static LiftControlSSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
+static HuntATM6SSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
+static ES_Event NewEvent; // Used for passing up events
+
+static uint8_t atm6_destroyed_count;
 
 
 /*******************************************************************************
@@ -103,11 +106,12 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitLiftControlSSM(void) {
+uint8_t InitHuntATM6SSM(void) {
     ES_Event returnEvent;
     // put us into the Initial PseudoState
     CurrentState = InitPState;
-    returnEvent = RunLiftControlSSM(INIT_EVENT);
+    returnEvent = RunHuntATM6SSM(INIT_EVENT);
+    atm6_destroyed_count = 0;
     // post the initial transition event
     if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
@@ -128,9 +132,9 @@ uint8_t InitLiftControlSSM(void) {
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed."
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
+ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
     uint8_t makeTransition = FALSE; // use to flag transition
-    LiftControlSSMState_t nextState;
+    HuntATM6SSMState_t nextState;
 
     ES_Tattle(); // trace call stack
 
@@ -141,152 +145,136 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                 // this is where you would put any actions associated with the
                 // transition from the initial pseudo-state into the actual
                 // initial state
-                ES_Timer_InitTimer(FRUSTRATION_TIMER, INIT_TICKS);
-            } else if (ThisEvent.EventType == ES_TIMEOUT) {
-                if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
-                    // now put the machine into the actual initial state
-                    if (check_bumper_states(BUMPER_4)) {
-                        nextState = Origin;
-                    } else {
-                        nextState = FindOrigin;
-                    }
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                }
+
+                // now put the machine into the actual initial state
+                nextState = ChargeRen;
+                makeTransition = TRUE;
+                ThisEvent.EventType = ES_NO_EVENT;
             }
             break;
 
-
-        case FindOrigin:
+        case ChargeRen:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    motion_lower_lift();
+                    motion_move(FORWARD, 60);
                     break;
+
                 case BUMPER_PRESSED:
-                    if (ThisEvent.EventParam & BUMPER_4_PRESSED) {
-                        nextState = Origin;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
+                    if (ThisEvent.EventParam & (BUMPER_0_PRESSED | BUMPER_1_PRESSED)) {
+                        nextState = TankRight;
+                    } else {
+                        nextState = TankLeft;
                     }
-                    break;
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
-            
-            case Origin:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_stop_lift();
-                    NewEvent.EventType = MOTION_LIFT_COMPLETE;
-                    PostHSM(NewEvent);
-                    break;
-
-                case MOTION_LIFT_BEACON_DETECTION:
-                    nextState = MoveToBeaconDetection;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
                 case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
+                default:
                     break;
             }
             break;
-            
-        case MoveToBeaconDetection:
+
+        case TankLeft:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    ES_Timer_InitTimer(MOTION_TIMER, ORIGIN_TO_BEACON_DETECTION_TICKS);
-                    motion_raise_lift();
+                    motion_tank_left();
+                    ES_Timer_InitTimer(TURN_TIMER, NINETY_DEGREE_TICKS);
                     break;
+
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
-                        nextState = BeaconDetection;
+                    if (ThisEvent.EventParam == TURN_TIMER) {
+                        nextState = FollowTape;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
 
                 case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
-
-        case MoveToRen:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    ES_Timer_InitTimer(MOTION_TIMER, BEACON_DETECTION_TO_REN_TICKS);
-                    motion_raise_lift();
-                    break;
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
-                        nextState = Ren;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
-
-        case BeaconDetection:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_stop_lift();
-                    NewEvent.EventType = MOTION_LIFT_COMPLETE;
-                    PostHSM(NewEvent);
-                    break;
-
-                case MOTION_LIFT_REN:
-                    nextState = MoveToRen;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-                    
-                case MOTION_LIFT_ORIGIN:
-                    nextState = FindOrigin;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
+                default:
                     break;
             }
             break;
             
-        case Ren:
+        case TankRight:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    motion_stop_lift();
-                    NewEvent.EventType = MOTION_LIFT_COMPLETE;
-                    PostHSM(NewEvent);
+                    motion_tank_right();
+                    ES_Timer_InitTimer(TURN_TIMER, NINETY_DEGREE_TICKS);
                     break;
 
-                case MOTION_LIFT_ORIGIN:
-                    nextState = FindOrigin;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == TURN_TIMER) {
+                        nextState = FollowTape;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
 
                 case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
+                default:
                     break;
             }
             break;
+
+        case FollowTape:
+            // run sub-state machine for this state
+            //NOTE: the SubState Machine runs and responds to events before anything in the this
+            //state machine does
+            ThisEvent = RunFollowTapeSSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    InitFollowTapeSSM();
+                    break;
+
+                case TRACKWIRE_ALIGNED:
+                    nextState = KillATM6;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default:
+                    break;
+            }
+            break;
+
+
+        case KillATM6:
+            ThisEvent = RunKillATM6SSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    InitKillATM6SSM();
+                    break;
+                
+                case ATM6_DESTROYED:
+                    if (++atm6_destroyed_count == 3) {
+                        NewEvent.EventType = ALL_ATM6_DESTROYED;
+                        PostHSM(NewEvent);
+                    } else {
+                        InitFollowTapeSSM();
+                        nextState = FollowTape;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default:
+                    break;
+            }
+            break;
+
+
 
         default: // all unhandled states fall into here
             break;
     } // end switch on Current State
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunLiftControlSSM(EXIT_EVENT);
+        RunHuntATM6SSM(EXIT_EVENT);
         CurrentState = nextState;
-        RunLiftControlSSM(ENTRY_EVENT);
+        RunHuntATM6SSM(ENTRY_EVENT);
     }
     ES_Tail(); // trace call stack end
     return ThisEvent;

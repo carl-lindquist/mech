@@ -33,10 +33,10 @@
 #include "BOARD.h"
 
 #include "HSM.h"
+
 #include "BootupSSM.h"
-#include "FollowTapeSSM.h" //#include all sub state machines called
+#include "HuntATM6SSM.h"
 #include "LiftControlSSM.h"
-#include "KillATM6SSM.h"
 
 #include "Motion.h"
 
@@ -53,15 +53,15 @@
 typedef enum {
     InitPState,
     Bootup,
-    FollowTape,
-    KillATM6,
+    HuntATM6,
+    DeadyMacDeadFace,
 } HSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
 	"Bootup",
-	"FollowTape",
-	"KillATM6",
+	"HuntATM6",
+	"DeadyMacDeadFace",
 };
 
 
@@ -165,10 +165,9 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             ThisEvent = RunBootupSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case BOOTUP_COMPLETE:
-//                    motion_tank_left();
-//                    nextState = KillATM6;
-//                    makeTransition = TRUE;
-//                    ThisEvent.EventType = ES_NO_EVENT;
+                    nextState = HuntATM6;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
                 case ES_NO_EVENT:
@@ -177,16 +176,19 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             }
             break;
 
-        case FollowTape:
+        case HuntATM6:
             // run sub-state machine for this state
             //NOTE: the SubState Machine runs and responds to events before anything in the this
             //state machine does
-            ThisEvent = RunFollowTapeSSM(ThisEvent);
+            ThisEvent = RunLiftControlSSM(ThisEvent);
+            ThisEvent = RunHuntATM6SSM(ThisEvent);
             switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    InitHuntATM6SSM();
+                    break;
 
-                case TRACKWIRE_ALIGNED:
-                    InitKillATM6SSM();
-                    nextState = KillATM6;
+                case ALL_ATM6_DESTROYED:
+                    nextState = DeadyMacDeadFace;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
@@ -197,15 +199,11 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             }
             break;
 
-
-        case KillATM6:
-            ThisEvent = RunKillATM6SSM(ThisEvent);
+        case DeadyMacDeadFace:
             switch (ThisEvent.EventType) {
-                case ATM6_DESTROYED:
-                    InitFollowTapeSSM();
-                    nextState = FollowTape;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
+
+                case ES_ENTRY:
+                    motion_tank_right();
                     break;
 
                 case ES_NO_EVENT:

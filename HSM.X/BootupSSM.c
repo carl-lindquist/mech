@@ -192,6 +192,16 @@ ES_Event RunBootupSSM(ES_Event ThisEvent) {
                     PostHSM(NewEvent);
                     ThisEvent.EventParam = ES_NO_EVENT;
                     break;
+                    
+                 
+                  //REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    //Test code
+                case BUMPER_PRESSED:
+                    motion_stop();
+                    NewEvent.EventType = BOOTUP_COMPLETE;
+                    PostHSM(NewEvent);
+                    ThisEvent.EventParam = ES_NO_EVENT;
+                    break;
 
                 case ES_NO_EVENT:
                 default:

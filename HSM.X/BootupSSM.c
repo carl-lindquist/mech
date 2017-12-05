@@ -164,43 +164,10 @@ ES_Event RunBootupSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case BUMPER_PRESSED:
                     if (ThisEvent.EventParam & BUMPER_0_PRESSED) {
-                        motion_raise_bridge();
-                        nextState = LocateBeacon;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
+                        NewEvent.EventType = BOOTUP_COMPLETE;
+                        PostHSM(NewEvent);
+                        ThisEvent.EventParam = ES_NO_EVENT;
                     }
-                    break;
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
-
-        case LocateBeacon:
-            ThisEvent = RunLiftControlSSM(ThisEvent);
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_right();
-                    NewEvent.EventType = MOTION_LIFT_BEACON_DETECTION;
-                    PostHSM(NewEvent);
-                    break;
-                    
-                case BEACON_FOUND:
-                    motion_stop();
-                    NewEvent.EventType = BOOTUP_COMPLETE;
-                    PostHSM(NewEvent);
-                    ThisEvent.EventParam = ES_NO_EVENT;
-                    break;
-                    
-                 
-                  //REMOVE THIS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                    //Test code
-                case BUMPER_PRESSED:
-                    motion_stop();
-                    NewEvent.EventType = BOOTUP_COMPLETE;
-                    PostHSM(NewEvent);
-                    ThisEvent.EventParam = ES_NO_EVENT;
                     break;
 
                 case ES_NO_EVENT:

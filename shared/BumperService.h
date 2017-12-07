@@ -52,6 +52,8 @@
  ******************************************************************************/
 
 uint8_t check_bumper_states(uint8_t sensor_pattern);
+
+uint8_t get_bumper_states(void);
  
 /**
  * @Function InitBumperService(uint8_t Priority)

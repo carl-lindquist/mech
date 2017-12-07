@@ -153,11 +153,11 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_open_bridge_door();
-                    ES_Timer_InitTimer(MOTION_TIMER, ACTUATE_DOOR_TICKS);
+                    ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_DOOR_TICKS);
                     break;
                     
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
+                    if (ThisEvent.EventParam == SERVO_TIMER) {
                         nextState = CloseDoor;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -174,11 +174,11 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_close_bridge_door();
-                    ES_Timer_InitTimer(MOTION_TIMER, ACTUATE_DOOR_TICKS);
+                    ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_DOOR_TICKS);
                     break;
                     
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
+                    if (ThisEvent.EventParam == SERVO_TIMER) {
                         nextState = LowerBridge;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -195,7 +195,7 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_lower_bridge();
-                    ES_Timer_InitTimer(MOTION_TIMER, ACTUATE_BRIDGE_TICKS);
+                    ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_BRIDGE_TICKS);
                     break;
                     
                 case TRACKWIRE_LOST:
@@ -204,8 +204,14 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
                     
+                case TRACKWIRE_FOUND:
+                    nextState = RaiseBridge;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                    
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
+                    if (ThisEvent.EventParam == SERVO_TIMER) {
                         nextState = ConfirmKill;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
@@ -265,10 +271,10 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_raise_bridge();
-                    ES_Timer_InitTimer(MOTION_TIMER, ACTUATE_BRIDGE_TICKS);
+                    ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_BRIDGE_TICKS);
                     break;
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
+                    if (ThisEvent.EventParam == SERVO_TIMER) {
                         NewEvent.EventType = ATM6_DESTROYED;
                         PostHSM(NewEvent);
                     }

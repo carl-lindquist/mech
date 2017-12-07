@@ -148,7 +148,9 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     if (check_bumper_states(BUMPER_4)) {
                         nextState = Origin;
                     } else {
-                        nextState = FindOrigin;
+//                        nextState = FindOrigin;
+                        nextState = Origin;
+                        
                     }
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
@@ -197,17 +199,17 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
             
         case MoveToBeaconDetection:
             switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    ES_Timer_InitTimer(MOTION_TIMER, ORIGIN_TO_BEACON_DETECTION_TICKS);
-                    motion_raise_lift();
-                    break;
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
-                        nextState = BeaconDetection;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
+//                case ES_ENTRY:
+//                    ES_Timer_InitTimer(LIFT_TIMER, ORIGIN_TO_BEACON_DETECTION_TICKS);
+//                    motion_raise_lift();
+//                    break;
+//                case ES_TIMEOUT:
+//                    if (ThisEvent.EventParam == LIFT_TIMER) {
+//                        nextState = BeaconDetection;
+//                        makeTransition = TRUE;
+//                        ThisEvent.EventType = ES_NO_EVENT;
+//                    }
+//                    break;
 
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
@@ -218,11 +220,11 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
         case MoveToRen:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    ES_Timer_InitTimer(MOTION_TIMER, BEACON_DETECTION_TO_REN_TICKS);
-                    motion_raise_lift();
+                    ES_Timer_InitTimer(LIFT_TIMER, BEACON_DETECTION_TO_REN_TICKS);
+//                    motion_raise_lift();
                     break;
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == MOTION_TIMER) {
+                    if (ThisEvent.EventParam == LIFT_TIMER) {
                         nextState = Ren;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;

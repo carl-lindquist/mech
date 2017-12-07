@@ -1,5 +1,5 @@
 /*
- * File: TemplateFSM.c
+ * File: AvoidObstacleSSM.c
  * Author: J. Edward Carryer
  * Modified: Gabriel H Elkaim
  *
@@ -27,16 +27,17 @@
 /*******************************************************************************
  * MODULE #INCLUDE                                                             *
  ******************************************************************************/
-
 #include "ES_Configure.h"
 #include "ES_Framework.h"
+#include "AvoidObstacleSSM.h"
+
+
 #include <BOARD.h>
 #include <stdio.h>
 
 #include "HSM.h"
-#include "FollowTapeSSM.h"
 
-#include "TapeSensorService.h"
+
 #include "Motion.h"
 
 
@@ -44,8 +45,14 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define FRUSTRATION_TICKS 5000
-#define TAPE_ADJUST_TICKS 400
+#define FRUSTRATION_TICKS  2000
+
+#define REVERSE_TICKS 1000
+#define UNEXPECTED_BUMP_REVERSE_TICKS 100
+#define AWAY_TICKS 840
+#define DEFAULT_PARALLEL_TICKS (2200)
+#define REDUCED_PARALLEL_TICKS (1950)
+#define TOWARD_TICKS (AWAY_TICKS - 350)
 
 
 /*******************************************************************************
@@ -64,30 +71,38 @@
 
 typedef enum {
     InitPState,
-    FindTape,
+    Reverse,
+    FirstTank,
+    Away,
+    BumpReverse,
+    SecondTank,
+    Parallel,
+    ThirdTank,
+    Toward,
+    Crawl,
     Align,
-    ShallowAlign,
-    CornerReverse,
-    AdjustLeft,
-    AdjustRight,
-} FollowTapeSSMState_t;
+} AvoidObstacleState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
-	"FindTape",
+	"Reverse",
+	"FirstTank",
+	"Away",
+	"BumpReverse",
+	"SecondTank",
+	"Parallel",
+	"ThirdTank",
+	"Toward",
+	"Crawl",
 	"Align",
-	"ShallowAlign",
-	"CornerReverse",
-	"AdjustLeft",
-	"AdjustRight",
 };
 
 
-static FollowTapeSSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
+static AvoidObstacleState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
+static ES_Event NewEvent; // Used for passing up events
 
-static uint8_t found_tape_once;
-
+static uint16_t parallel_ticks;
 
 
 /*******************************************************************************
@@ -95,7 +110,7 @@ static uint8_t found_tape_once;
  ******************************************************************************/
 
 /**
- * @Function InitFollowTapeSSM(void)
+ * @Function InitAvoidObstacleSSM(void)
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
  *        execution. It will post an ES_INIT event to the appropriate event
@@ -103,11 +118,11 @@ static uint8_t found_tape_once;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitFollowTapeSSM(void) {
+uint8_t InitAvoidObstacleSSM(void) {
     ES_Event returnEvent;
     // put us into the Initial PseudoState
     CurrentState = InitPState;
-    returnEvent = RunFollowTapeSSM(INIT_EVENT);
+    returnEvent = RunAvoidObstacleSSM(INIT_EVENT);
     // post the initial transition event
     if (returnEvent.EventType == ES_NO_EVENT) {
         return TRUE;
@@ -117,7 +132,7 @@ uint8_t InitFollowTapeSSM(void) {
 }
 
 /**
- * @Function RunFollowTapeSSM(ES_Event ThisEvent)
+ * @Function RunAvoidObstacleSSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
  * @brief This function is where you implement the whole of the flat state machine,
@@ -128,9 +143,9 @@ uint8_t InitFollowTapeSSM(void) {
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed."
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
+ES_Event RunAvoidObstacleSSM(ES_Event ThisEvent) {
     uint8_t makeTransition = FALSE; // use to flag transition
-    FollowTapeSSMState_t nextState;
+    AvoidObstacleState_t nextState;
 
     ES_Tattle(); // trace call stack
 
@@ -141,59 +156,238 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
                 // this is where you would put any actions associated with the
                 // transition from the initial pseudo-state into the actual
                 // initial state
+                motion_stop();
 
                 // now put the machine into the actual initial state
-                if (check_tape_states(TAPE_1)) {
-                    nextState = Align;
-                } else if (check_tape_states(TAPE_0)) {
-                    nextState = AdjustLeft;
-                } else if (check_tape_states(TAPE_2)) {
-                    nextState = Align;
-                } else {
-                    nextState = FindTape;
-                }
+
+                nextState = Reverse;
                 makeTransition = TRUE;
                 ThisEvent.EventType = ES_NO_EVENT;
             }
             break;
 
-        case FindTape:
+        case Reverse:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    found_tape_once = 0;
+                    motion_move(REVERSE, 70);
+                    ES_Timer_InitTimer(DRIVE_TIMER, REVERSE_TICKS);
                     break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = FirstTank;
+                        parallel_ticks = DEFAULT_PARALLEL_TICKS;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
                 case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
-                        found_tape_once = 1;
-                    }
-                    if (ThisEvent.EventParam & TAPE_0_TRIPPED) {
-                        if (found_tape_once) {
-                            nextState = Align; // Steep alignment angle
-                        } else {
-                            nextState = ShallowAlign;
-                        }
+                    if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
+                        nextState = FirstTank;
+                        parallel_ticks = REDUCED_PARALLEL_TICKS;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
-                    } else if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-                        if (check_tape_states(TAPE_1)) {
-                            nextState = ShallowAlign;
-                        } else if (found_tape_once) {
-                            nextState = Align; // Steep alignment angle
-                        } else {
-                            nextState = ShallowAlign;
-                        }
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                        break;
                     }
                     break;
+
+
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;
             }
             break;
 
-        case Align: // in the first state, replace this with appropriate state
+        case FirstTank:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_tank_right();
+                    ES_Timer_InitTimer(DRIVE_TIMER, RIGHT_NINETY_DEGREE_TURN_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = Away;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case Away:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(FORWARD, MAX_SPEED);
+                    ES_Timer_InitTimer(DRIVE_TIMER, AWAY_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = SecondTank;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case BUMPER_PRESSED:
+                    nextState = BumpReverse;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+
+            }
+            break;
+            
+        case BumpReverse:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(REVERSE, MIN_SPEED);
+                    ES_Timer_InitTimer(DRIVE_TIMER, UNEXPECTED_BUMP_REVERSE_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = SecondTank;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case SecondTank:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_tank_left();
+                    ES_Timer_InitTimer(DRIVE_TIMER, LEFT_NINETY_DEGREE_TURN_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = Parallel;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case Parallel:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(FORWARD, 60);
+                    ES_Timer_InitTimer(DRIVE_TIMER, parallel_ticks);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = ThirdTank;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case TAPE_SENSOR_TRIPPED:
+                    if (check_tape_states(TAPE_0) && check_tape_states(TAPE_2) && !check_tape_states(TAPE_1)) {
+                        motion_stop(); // no time to waste here
+                        nextState = Align;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case BUMPER_PRESSED:
+                    nextState = ThirdTank;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case ThirdTank:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_tank_left();
+                    ES_Timer_InitTimer(DRIVE_TIMER, LEFT_NINETY_DEGREE_TURN_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = Toward;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case Toward:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(FORWARD, MAX_SPEED);
+                    ES_Timer_InitTimer(DRIVE_TIMER, TOWARD_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
+                        nextState = Crawl;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case Crawl:
+            switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    motion_move(FORWARD, 40);
+                    break;
+
+                case TAPE_SENSOR_UNTRIPPED:
+                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
+                        nextState = Align;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+
+                case ES_NO_EVENT:
+                default: // all unhandled events pass the event back up to the next level
+                    break;
+            }
+            break;
+
+        case Align:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
@@ -202,103 +396,22 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
 
                 case TAPE_SENSOR_UNTRIPPED:
                     if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                        nextState = AdjustLeft;
-                        makeTransition = TRUE;
+                        motion_stop();
+                        NewEvent.EventType = OBSTACLE_AVOIDED;
+                        PostHSM(NewEvent);
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-
+                    
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
-                        motion_move(FORWARD, 40);
-                        nextState = FindTape;
-                        makeTransition = TRUE;
+                        NewEvent.EventType = OBSTACLE_AVOIDED;
+                        PostHSM(NewEvent);
                         ThisEvent.EventType = ES_NO_EVENT;
+                        motion_move(FORWARD, 50);
                     }
                     break;
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
 
-        case ShallowAlign:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_left();
-                    break;
-
-                case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
-                        nextState = AdjustRight;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-            }
-            break;
-
-        case CornerReverse: // in the first state, replace this with appropriate state
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_move(REVERSE, 30);
-                    break;
-                case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_2_UNTRIPPED) {
-                        nextState = Align;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
-
-
-        case AdjustRight: // in the first state, replace this with appropriate state
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_bank_right(FORWARD);
-                    break;
-                case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED && (get_tape_states() & TAPE_0)) {
-                        nextState = AdjustLeft;
-                        makeTransition = TRUE;
-                    }
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-
-                case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-                        nextState = CornerReverse;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                case ES_NO_EVENT:
-                default: // all unhandled events pass the event back up to the next level
-                    break;
-            }
-            break;
-
-        case AdjustLeft: // in the first state, replace this with appropriate state
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_bank_left(FORWARD);
-                    break;
-                case TAPE_SENSOR_TRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
-                        nextState = AdjustRight;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    } else if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
-                        nextState = CornerReverse;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;
@@ -310,9 +423,9 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
     } // end switch on Current State
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunFollowTapeSSM(EXIT_EVENT);
+        RunAvoidObstacleSSM(EXIT_EVENT);
         CurrentState = nextState;
-        RunFollowTapeSSM(ENTRY_EVENT);
+        RunAvoidObstacleSSM(ENTRY_EVENT);
     }
     ES_Tail(); // trace call stack end
     return ThisEvent;

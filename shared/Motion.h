@@ -10,6 +10,8 @@
 #define MAX_SPEED 100
 #define MIN_SPEED 21
 
+#define RIGHT_NINETY_DEGREE_TURN_TICKS 640
+#define LEFT_NINETY_DEGREE_TURN_TICKS 750
 
 //----- Motor Control Functions -----//
 

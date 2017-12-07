@@ -39,6 +39,7 @@
 #include "KillATM6SSM.h"
 #include "LiftControlSSM.h"
 #include "FollowTapeSSM.h"
+#include "AvoidObstacleSSM.h"
 
 #include "Motion.h"
 
@@ -48,8 +49,6 @@
  ******************************************************************************/
 
 #define FRUSTRATION_TICKS  2000
-
-#define NINETY_DEGREE_TICKS 750
 
 
 /*******************************************************************************
@@ -73,6 +72,7 @@ typedef enum {
     TankRight,
     TankLeft,
     FollowTape,
+    AvoidObstacle,
     KillATM6,
     Idle,
 } HuntATM6SSMState_t;
@@ -84,6 +84,7 @@ static const char *StateNames[] = {
 	"TankRight",
 	"TankLeft",
 	"FollowTape",
+	"AvoidObstacle",
 	"KillATM6",
 	"Idle",
 };
@@ -157,7 +158,7 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
             break;
 
         case LocateBeacon:
-            ThisEvent = RunLiftControlSSM(ThisEvent);
+//            ThisEvent = RunLiftControlSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_tank_right();
@@ -207,11 +208,11 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_tank_left();
-                    ES_Timer_InitTimer(TURN_TIMER, NINETY_DEGREE_TICKS);
+                    ES_Timer_InitTimer(DRIVE_TIMER, LEFT_NINETY_DEGREE_TURN_TICKS);
                     break;
 
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == TURN_TIMER) {
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
                         motion_bank_right(FORWARD);
                         nextState = FollowTape;
                         makeTransition = TRUE;
@@ -229,11 +230,11 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_tank_right();
-                    ES_Timer_InitTimer(TURN_TIMER, NINETY_DEGREE_TICKS);
+                    ES_Timer_InitTimer(DRIVE_TIMER, RIGHT_NINETY_DEGREE_TURN_TICKS);
                     break;
 
                 case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == TURN_TIMER) {
+                    if (ThisEvent.EventParam == DRIVE_TIMER) {
                         motion_bank_left(FORWARD);
                         nextState = FollowTape;
                         makeTransition = TRUE;
@@ -259,10 +260,37 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
 
                 case TRACKWIRE_ALIGNED:
                     nextState = KillATM6;
+                    InitKillATM6SSM();
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
+                case BUMPER_PRESSED:
+                    nextState = AvoidObstacle;
+                    makeTransition = TRUE;
+                    InitAvoidObstacleSSM();
+//                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_NO_EVENT:
+                default:
+                    break;
+            }
+            break;
+            
+        case AvoidObstacle:
+            // run sub-state machine for this state
+            //NOTE: the SubState Machine runs and responds to events before anything in the this
+            //state machine does
+            ThisEvent = RunAvoidObstacleSSM(ThisEvent);
+            switch (ThisEvent.EventType) {
+                case OBSTACLE_AVOIDED:
+                    nextState = FollowTape;
+                    motion_move(FORWARD, 40);
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+                    
                 case ES_NO_EVENT:
                 default:
                     break;
@@ -273,9 +301,6 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
         case KillATM6:
             ThisEvent = RunKillATM6SSM(ThisEvent);
             switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    InitKillATM6SSM();
-                    break;
 
                 case ATM6_DESTROYED:
                     if (++atm6_destroyed_count == 3) {
@@ -284,6 +309,7 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
                     } else {
                         InitFollowTapeSSM();
                         nextState = FollowTape;
+                        motion_move(FORWARD, 40);
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }

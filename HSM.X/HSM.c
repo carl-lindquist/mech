@@ -37,7 +37,7 @@
 #include "BootupSSM.h"
 #include "HuntATM6SSM.h"
 #include "LiftControlSSM.h"
-
+#include "HuntRenSSM.h"
 #include "Motion.h"
 
 /*******************************************************************************
@@ -54,14 +54,14 @@ typedef enum {
     InitPState,
     Bootup,
     HuntATM6,
-    DeadyMacDeadFace,
+    HuntRen,
 } HSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
 	"Bootup",
 	"HuntATM6",
-	"DeadyMacDeadFace",
+	"HuntRen",
 };
 
 
@@ -165,7 +165,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             ThisEvent = RunBootupSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case BOOTUP_COMPLETE:
-                    nextState = HuntATM6;
+                    nextState = HuntRen;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
@@ -188,7 +188,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
                     break;
 
                 case ALL_ATM6_DESTROYED:
-                    nextState = DeadyMacDeadFace;
+                    nextState = HuntRen;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
@@ -199,11 +199,14 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             }
             break;
 
-        case DeadyMacDeadFace:
+        case HuntRen:
+            ThisEvent = RunLiftControlSSM(ThisEvent);
+            ThisEvent = RunHuntRenSSM(ThisEvent);
             switch (ThisEvent.EventType) {
 
                 case ES_ENTRY:
-                    motion_tank_right();
+                    InitHuntRenSSM();
+             
                     break;
 
                 case ES_NO_EVENT:

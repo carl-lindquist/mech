@@ -62,6 +62,7 @@ typedef enum {
     BOOTUP_COMPLETE,
     ATM6_DESTROYED,
     ALL_ATM6_DESTROYED,
+    OBSTACLE_AVOIDED,
 
 } ES_EventTyp_t;
 
@@ -93,6 +94,7 @@ static const char *EventNames[] = {
 	"BOOTUP_COMPLETE",
 	"ATM6_DESTROYED",
 	"ALL_ATM6_DESTROYED",
+	"OBSTACLE_AVOIDED",
 };
 
 
@@ -116,7 +118,7 @@ static const char *EventNames[] = {
 #define TIMER4_RESP_FUNC PostHSM
 #define TIMER5_RESP_FUNC PostHSM
 #define TIMER6_RESP_FUNC PostHSM
-#define TIMER7_RESP_FUNC TIMER_UNUSED
+#define TIMER7_RESP_FUNC PostHSM
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
 #define TIMER10_RESP_FUNC TIMER_UNUSED
@@ -138,8 +140,9 @@ static const char *EventNames[] = {
 #define TRACKWIRE_SERVICE_TIMER 2
 #define BEACON_SERVICE_TIMER 3
 #define FRUSTRATION_TIMER 4
-#define TURN_TIMER 5
-#define MOTION_TIMER 6
+#define DRIVE_TIMER 5
+#define LIFT_TIMER 6
+#define SERVO_TIMER 7
 
 
 /****************************************************************************/

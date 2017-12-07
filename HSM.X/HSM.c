@@ -165,7 +165,7 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             ThisEvent = RunBootupSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case BOOTUP_COMPLETE:
-                    nextState = HuntRen;
+                    nextState = HuntATM6;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
@@ -184,6 +184,8 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             ThisEvent = RunHuntATM6SSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
+                    NewEvent.EventType = MOTION_LIFT_BEACON_DETECTION;
+                    PostHSM(NewEvent);
                     InitHuntATM6SSM();
                     break;
 
@@ -206,7 +208,8 @@ ES_Event RunHSM(ES_Event ThisEvent) {
 
                 case ES_ENTRY:
                     InitHuntRenSSM();
-             
+                    NewEvent.EventType = MOTION_LIFT_REN;
+                    PostHSM(NewEvent);
                     break;
 
                 case ES_NO_EVENT:

@@ -38,6 +38,7 @@
 
 #include "FollowTapeSSM.h"
 #include "AvoidObstacleSSM.h"
+#include "ChargeBeaconSSM.h"
 
 #include "Motion.h"
 
@@ -46,9 +47,9 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define FRUSTRATION_TICKS  2000
+#define FRUSTRATION_TICKS  3500
 
-#define CRAWL_TICKS 1000
+#define CRAWL_TICKS 1500
 #define TINY_TURN_TICKS 50
 #define TINY_REVERSE_TICKS 100
 #define LINEUP_REVERSE_TICKS 100
@@ -70,13 +71,7 @@
 
 typedef enum {
     InitPState,
-    LocateBeacon,
-    ChargeRen,
-    TinyReverse,
-    TinyTurn,
-    TankLeft,
-    BankToTape,
-    AlignBorderTape,
+    ChargeBeacon,
     FollowTape,
     AvoidObstacle,
     LineupReverse,
@@ -89,13 +84,7 @@ typedef enum {
 
 static const char *StateNames[] = {
 	"InitPState",
-	"LocateBeacon",
-	"ChargeRen",
-	"TinyReverse",
-	"TinyTurn",
-	"TankLeft",
-	"BankToTape",
-	"AlignBorderTape",
+	"ChargeBeacon",
 	"FollowTape",
 	"AvoidObstacle",
 	"LineupReverse",
@@ -166,165 +155,30 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                 // initial state
 
                 // now put the machine into the actual initial state
-                nextState = LocateBeacon;
+                nextState = ChargeBeacon;
                 makeTransition = TRUE;
-                //POST LIFT JACKUP
+                InitChargeBeaconSSM();
+                NewEvent.EventType = MOTION_LIFT_REN;
+                PostHSM(NewEvent);
                 ThisEvent.EventType = ES_NO_EVENT;
             }
             break;
 
 
-        case LocateBeacon:
+        case ChargeBeacon:
+            ThisEvent = RunChargeBeaconSSM(ThisEvent);
             switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_right();
-                    ES_Timer_InitTimer(DRIVE_TIMER, RIGHT_NINETY_DEGREE_TURN_TICKS * 7);
-                    break;
 
-                case BEACON_FOUND:
-                    motion_stop();
-                    nextState = ChargeRen;
+                case BEACON_CHARGE_COMPLETE:
+                    motion_move(FORWARD, 40);
+                    InitFollowTapeSSM();
+                    nextState = FollowTape;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
-
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == DRIVE_TIMER) {
-                        nextState = AlignBorderTape;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-
             }
             break;
-
-        case TinyTurn:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_left();
-                    ES_Timer_InitTimer(DRIVE_TIMER, TINY_TURN_TICKS);
-                    break;
-
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == DRIVE_TIMER) {
-                        nextState = ChargeRen;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-
-            }
-            break;
-
-        case AlignBorderTape:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_right();
-                    break;
-
-                case TAPE_SENSOR_UNTRIPPED:
-                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
-                        nextState = FollowTape;
-                        InitFollowTapeSSM();
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
-
-        case ChargeRen:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_bank_left(FORWARD);
-                    break;
-
-                case BEACON_LOST:
-                    motion_stop();
-                    nextState = LocateBeacon;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-
-                case BUMPER_PRESSED:
-                    nextState = TankLeft;
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
-
-        case TinyReverse:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_move(REVERSE, 50);
-                    ES_Timer_InitTimer(DRIVE_TIMER, TINY_REVERSE_TICKS);
-                    break;
-
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == DRIVE_TIMER) {
-                        nextState = TankLeft;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-
-            }
-            break;
-
-        case TankLeft:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_tank_left();
-                    ES_Timer_InitTimer(DRIVE_TIMER, LEFT_NINETY_DEGREE_TURN_TICKS);
-                    break;
-
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == DRIVE_TIMER) {
-                        motion_move(FORWARD, 50);
-                        nextState = BankToTape;
-                        InitFollowTapeSSM();
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
-
-        case BankToTape:
-            switch (ThisEvent.EventType) {
-                case ES_ENTRY:
-                    motion_bank_right(FORWARD);
-                    ES_Timer_InitTimer(DRIVE_TIMER, CRAWL_TICKS);
-                    break;
-
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == DRIVE_TIMER) {
-                        nextState = FollowTape;
-                        InitFollowTapeSSM();
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    makeTransition = TRUE;
-                    ThisEvent.EventType = ES_NO_EVENT;
-                    break;
-
-
-                case ES_NO_EVENT:
-                default:
-                    break;
-            }
-            break;
+        
 
         case FollowTape:
             // run sub-state machine for this state
@@ -394,9 +248,6 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
             break;
 
         case Lineup:
-            // run sub-state machine for this state
-            //NOTE: the SubState Machine runs and responds to events before anything in the this
-            //state machine does
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_pivot_left(FORWARD, MAX_SPEED);

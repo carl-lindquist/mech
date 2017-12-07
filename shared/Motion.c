@@ -32,7 +32,7 @@
 #define BRIDGE_DOOR_OPEN 2000
 #define BRIDGE_DOOR_CLOSED 1300
 #define REN_DOOR_OPEN 1200
-#define REN_DOOR_CLOSED 1700
+#define REN_DOOR_CLOSED 1800
 
 
 //---------- Private Prototypes ----------//

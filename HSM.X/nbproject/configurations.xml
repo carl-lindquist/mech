@@ -37,6 +37,7 @@
       <itemPath>HuntATM6SSM.h</itemPath>
       <itemPath>AvoidObstacleSSM.h</itemPath>
       <itemPath>HuntRenSSM.h</itemPath>
+      <itemPath>ChargeBeaconSSM.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -73,6 +74,7 @@
       <itemPath>HuntATM6SSM.c</itemPath>
       <itemPath>AvoidObstacleSSM.c</itemPath>
       <itemPath>HuntRenSSM.c</itemPath>
+      <itemPath>ChargeBeaconSSM.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

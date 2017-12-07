@@ -45,8 +45,8 @@
  ******************************************************************************/
 
 #define INIT_TICKS 100
-#define ORIGIN_TO_BEACON_DETECTION_TICKS 10000
-#define BEACON_DETECTION_TO_REN_TICKS 2000
+#define ORIGIN_TO_BEACON_DETECTION_TICKS 13000
+#define BEACON_DETECTION_TO_REN_TICKS 11500
 
 
 /*******************************************************************************
@@ -148,8 +148,8 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     if (check_bumper_states(BUMPER_4)) {
                         nextState = Origin;
                     } else {
-//                        nextState = FindOrigin;
-                        nextState = Origin;
+                        nextState = FindOrigin;
+//                        nextState = Origin;
                         
                     }
                     makeTransition = TRUE;
@@ -199,17 +199,17 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
             
         case MoveToBeaconDetection:
             switch (ThisEvent.EventType) {
-//                case ES_ENTRY:
-//                    ES_Timer_InitTimer(LIFT_TIMER, ORIGIN_TO_BEACON_DETECTION_TICKS);
-//                    motion_raise_lift();
-//                    break;
-//                case ES_TIMEOUT:
-//                    if (ThisEvent.EventParam == LIFT_TIMER) {
-//                        nextState = BeaconDetection;
-//                        makeTransition = TRUE;
-//                        ThisEvent.EventType = ES_NO_EVENT;
-//                    }
-//                    break;
+                case ES_ENTRY:
+                    ES_Timer_InitTimer(LIFT_TIMER, ORIGIN_TO_BEACON_DETECTION_TICKS);
+                    motion_raise_lift();
+                    break;
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == LIFT_TIMER) {
+                        nextState = BeaconDetection;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
 
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
@@ -221,7 +221,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     ES_Timer_InitTimer(LIFT_TIMER, BEACON_DETECTION_TO_REN_TICKS);
-//                    motion_raise_lift();
+                    motion_raise_lift();
                     break;
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == LIFT_TIMER) {

@@ -45,7 +45,7 @@
 
 #define FRUSTRATION_TICKS  8000
 
-#define BEACON_LOST_TICKS 750
+#define BEACON_LOST_TICKS 1000
 
 #define CRAWL_TICKS 400
 #define CHARGE_REVERSE_TICKS 500
@@ -305,6 +305,12 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                    
+                case BUMPER_PRESSED:
+                    nextState = ChargeReverse;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
 
                 case ES_NO_EVENT:
                 default:
@@ -327,6 +333,12 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     //                    }
+                    break;
+                    
+                case BUMPER_PRESSED:
+                    nextState = ChargeReverse;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
 

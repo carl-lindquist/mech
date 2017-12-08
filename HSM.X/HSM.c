@@ -204,6 +204,10 @@ ES_Event RunHSM(ES_Event ThisEvent) {
         case HuntRen:
             ThisEvent = RunHuntRenSSM(ThisEvent);
             switch (ThisEvent.EventType) {
+                case ES_ENTRY:
+                    NewEvent.EventType = MOTION_LIFT_REN;
+                    PostLiftControlFSM(NewEvent);
+                    break;
 
                 case ES_NO_EVENT:
                 default:

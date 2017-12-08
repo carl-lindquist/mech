@@ -46,7 +46,7 @@
 
 #define INIT_TICKS 100
 #define ORIGIN_TO_BEACON_DETECTION_TICKS 10000
-#define BEACON_DETECTION_TO_REN_TICKS 13000
+#define BEACON_DETECTION_TO_REN_TICKS 30000
 
 
 /*******************************************************************************

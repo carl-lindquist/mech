@@ -184,6 +184,7 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
 
                 case TRACKWIRE_ALIGNED:
+                    motion_stop();
                     nextState = KillATM6;
                     InitKillATM6SSM();
                     makeTransition = TRUE;
@@ -233,10 +234,7 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
                         NewEvent.EventType = ALL_ATM6_DESTROYED;
                         PostHSM(NewEvent);
                     } else {
-                        nextState = FollowTape;
-                        if (check_tape_states(TAPE_1)) {
-                            InitFollowTapeSSM();
-                        }
+                        nextState = Jig;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -264,7 +262,6 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
                     if (ThisEvent.EventParam & TAPE_1_UNTRIPPED && check_tape_states(TAPE_0)) {
                         nextState = FollowTape;
                         InitFollowTapeSSM();
-                        motion_bank_left(FORWARD);
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }

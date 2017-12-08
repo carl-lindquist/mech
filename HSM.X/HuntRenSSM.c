@@ -53,9 +53,10 @@
 #define CRAWL_TICKS 1500
 #define TINY_TURN_TICKS 50
 #define TINY_REVERSE_TICKS 100
-#define LINEUP_REVERSE_TICKS 100
+#define LINEUP_REVERSE_TICKS 75
 
 #define REN_LINEUP_FRUSTRATION_TICKS 7000
+#define LOWER_LIFT_FRUSTRATION_TICKS 5000
 
 
 /*******************************************************************************
@@ -160,8 +161,7 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                 // initial state
 
                 // now put the machine into the actual initial state
-                NewEvent.EventType = MOTION_LIFT_REN;
-                PostLiftControlFSM(NewEvent);
+                
                 InitChargeBeaconSSM();
                 nextState = ChargeBeacon;
                 makeTransition = TRUE;
@@ -235,7 +235,7 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_tank_right();
-                    ES_Timer_InitTimer(DRIVE_TIMER, LEFT_NINETY_DEGREE_TURN_TICKS);
+                    ES_Timer_InitTimer(DRIVE_TIMER, RIGHT_NINETY_DEGREE_TURN_TICKS);
                     break;
 
                 case ES_TIMEOUT:
@@ -266,7 +266,7 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                    
+
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
                         nextState = OpenRenDoor;
@@ -274,7 +274,7 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                    
+
 
                 case ES_NO_EVENT:
                 default:
@@ -307,6 +307,16 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_open_ren_door();
+                    motion_stop();
+                    ES_Timer_InitTimer(FRUSTRATION_TIMER, LOWER_LIFT_FRUSTRATION_TICKS);
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                        NewEvent.EventType = MOTION_LIFT_ORIGIN;
+                        PostLiftControlFSM(NewEvent);
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
 
                 case ES_NO_EVENT:

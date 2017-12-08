@@ -101,14 +101,14 @@ void motion_bank_left(uint8_t dir) {
     set_motor_direction(RIGHT_MOTOR, dir);
      
     set_motor_speed(LEFT_MOTOR, 30);
-    set_motor_speed(RIGHT_MOTOR, 50);
+    set_motor_speed(RIGHT_MOTOR, 55);
 }
 
 void motion_bank_right(uint8_t dir) {
     set_motor_direction(LEFT_MOTOR, dir);
     set_motor_direction(RIGHT_MOTOR, dir);
         
-    set_motor_speed(LEFT_MOTOR, 50);
+    set_motor_speed(LEFT_MOTOR, 55);
     set_motor_speed(RIGHT_MOTOR, 30);
 }
 

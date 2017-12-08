@@ -30,7 +30,6 @@
       <itemPath>../shared/BumperService.h</itemPath>
       <itemPath>HSM.h</itemPath>
       <itemPath>FollowTapeSSM.h</itemPath>
-      <itemPath>LiftControlSSM.h</itemPath>
       <itemPath>KillATM6SSM.h</itemPath>
       <itemPath>../shared/BeaconService.h</itemPath>
       <itemPath>BootupSSM.h</itemPath>
@@ -38,6 +37,7 @@
       <itemPath>AvoidObstacleSSM.h</itemPath>
       <itemPath>HuntRenSSM.h</itemPath>
       <itemPath>ChargeBeaconSSM.h</itemPath>
+      <itemPath>LiftControlFSM.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -67,7 +67,6 @@
       <itemPath>../shared/BumperService.c</itemPath>
       <itemPath>HSM.c</itemPath>
       <itemPath>FollowTapeSSM.c</itemPath>
-      <itemPath>LiftControlSSM.c</itemPath>
       <itemPath>KillATM6SSM.c</itemPath>
       <itemPath>../shared/BeaconService.c</itemPath>
       <itemPath>BootupSSM.c</itemPath>
@@ -75,6 +74,7 @@
       <itemPath>AvoidObstacleSSM.c</itemPath>
       <itemPath>HuntRenSSM.c</itemPath>
       <itemPath>ChargeBeaconSSM.c</itemPath>
+      <itemPath>LiftControlFSM.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

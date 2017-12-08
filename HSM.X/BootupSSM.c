@@ -36,7 +36,7 @@
 #include "HSM.h"
 #include "BootupSSM.h"
 
-#include "LiftControlSSM.h"
+#include "LiftControlFSM.h"
 
 #include "Motion.h"
 
@@ -136,7 +136,7 @@ ES_Event RunBootupSSM(ES_Event ThisEvent) {
                 // transition from the initial pseudo-state into the actual
                 // initial state
                 motion_compact_bridge();
-                InitLiftControlSSM();
+//                InitLiftControlSSM();
                 // now put the machine into the actual initial state
                 nextState = Bootup;
                 makeTransition = TRUE;
@@ -146,7 +146,7 @@ ES_Event RunBootupSSM(ES_Event ThisEvent) {
 
         case Bootup:
             // run sub-state machine for this state
-            ThisEvent = RunLiftControlSSM(ThisEvent);
+//            ThisEvent = RunLiftControlSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case MOTION_LIFT_COMPLETE:
                     nextState = Idle;

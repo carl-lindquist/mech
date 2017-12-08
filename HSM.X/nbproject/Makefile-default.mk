@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=TemplateES_Main.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c ../shared/TrackwireService.c ../shared/BumperService.c HSM.c FollowTapeSSM.c LiftControlSSM.c KillATM6SSM.c ../shared/BeaconService.c BootupSSM.c HuntATM6SSM.c AvoidObstacleSSM.c HuntRenSSM.c ChargeBeaconSSM.c
+SOURCEFILES_QUOTED_IF_SPACED=TemplateES_Main.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c ../shared/TrackwireService.c ../shared/BumperService.c HSM.c FollowTapeSSM.c KillATM6SSM.c ../shared/BeaconService.c BootupSSM.c HuntATM6SSM.c AvoidObstacleSSM.c HuntRenSSM.c ChargeBeaconSSM.c LiftControlFSM.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o ${OBJECTDIR}/HSM.o ${OBJECTDIR}/FollowTapeSSM.o ${OBJECTDIR}/LiftControlSSM.o ${OBJECTDIR}/KillATM6SSM.o ${OBJECTDIR}/_ext/819228780/BeaconService.o ${OBJECTDIR}/BootupSSM.o ${OBJECTDIR}/HuntATM6SSM.o ${OBJECTDIR}/AvoidObstacleSSM.o ${OBJECTDIR}/HuntRenSSM.o ${OBJECTDIR}/ChargeBeaconSSM.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/TemplateES_Main.o.d ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d ${OBJECTDIR}/_ext/819228780/Motion.o.d ${OBJECTDIR}/_ext/417556191/AD.o.d ${OBJECTDIR}/_ext/417556191/BOARD.o.d ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o.d ${OBJECTDIR}/_ext/417556191/ES_Framework.o.d ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o.d ${OBJECTDIR}/_ext/417556191/ES_PostList.o.d ${OBJECTDIR}/_ext/417556191/ES_Queue.o.d ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o.d ${OBJECTDIR}/_ext/417556191/ES_Timers.o.d ${OBJECTDIR}/_ext/417556191/IO_Ports.o.d ${OBJECTDIR}/_ext/417556191/RC_Servo.o.d ${OBJECTDIR}/_ext/417556191/pwm.o.d ${OBJECTDIR}/_ext/417556191/serial.o.d ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d ${OBJECTDIR}/_ext/819228780/BumperService.o.d ${OBJECTDIR}/HSM.o.d ${OBJECTDIR}/FollowTapeSSM.o.d ${OBJECTDIR}/LiftControlSSM.o.d ${OBJECTDIR}/KillATM6SSM.o.d ${OBJECTDIR}/_ext/819228780/BeaconService.o.d ${OBJECTDIR}/BootupSSM.o.d ${OBJECTDIR}/HuntATM6SSM.o.d ${OBJECTDIR}/AvoidObstacleSSM.o.d ${OBJECTDIR}/HuntRenSSM.o.d ${OBJECTDIR}/ChargeBeaconSSM.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o ${OBJECTDIR}/HSM.o ${OBJECTDIR}/FollowTapeSSM.o ${OBJECTDIR}/KillATM6SSM.o ${OBJECTDIR}/_ext/819228780/BeaconService.o ${OBJECTDIR}/BootupSSM.o ${OBJECTDIR}/HuntATM6SSM.o ${OBJECTDIR}/AvoidObstacleSSM.o ${OBJECTDIR}/HuntRenSSM.o ${OBJECTDIR}/ChargeBeaconSSM.o ${OBJECTDIR}/LiftControlFSM.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/TemplateES_Main.o.d ${OBJECTDIR}/_ext/819228780/TapeSensorService.o.d ${OBJECTDIR}/_ext/819228780/Motion.o.d ${OBJECTDIR}/_ext/417556191/AD.o.d ${OBJECTDIR}/_ext/417556191/BOARD.o.d ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o.d ${OBJECTDIR}/_ext/417556191/ES_Framework.o.d ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o.d ${OBJECTDIR}/_ext/417556191/ES_PostList.o.d ${OBJECTDIR}/_ext/417556191/ES_Queue.o.d ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o.d ${OBJECTDIR}/_ext/417556191/ES_Timers.o.d ${OBJECTDIR}/_ext/417556191/IO_Ports.o.d ${OBJECTDIR}/_ext/417556191/RC_Servo.o.d ${OBJECTDIR}/_ext/417556191/pwm.o.d ${OBJECTDIR}/_ext/417556191/serial.o.d ${OBJECTDIR}/_ext/819228780/TrackwireService.o.d ${OBJECTDIR}/_ext/819228780/BumperService.o.d ${OBJECTDIR}/HSM.o.d ${OBJECTDIR}/FollowTapeSSM.o.d ${OBJECTDIR}/KillATM6SSM.o.d ${OBJECTDIR}/_ext/819228780/BeaconService.o.d ${OBJECTDIR}/BootupSSM.o.d ${OBJECTDIR}/HuntATM6SSM.o.d ${OBJECTDIR}/AvoidObstacleSSM.o.d ${OBJECTDIR}/HuntRenSSM.o.d ${OBJECTDIR}/ChargeBeaconSSM.o.d ${OBJECTDIR}/LiftControlFSM.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o ${OBJECTDIR}/HSM.o ${OBJECTDIR}/FollowTapeSSM.o ${OBJECTDIR}/LiftControlSSM.o ${OBJECTDIR}/KillATM6SSM.o ${OBJECTDIR}/_ext/819228780/BeaconService.o ${OBJECTDIR}/BootupSSM.o ${OBJECTDIR}/HuntATM6SSM.o ${OBJECTDIR}/AvoidObstacleSSM.o ${OBJECTDIR}/HuntRenSSM.o ${OBJECTDIR}/ChargeBeaconSSM.o
+OBJECTFILES=${OBJECTDIR}/TemplateES_Main.o ${OBJECTDIR}/_ext/819228780/TapeSensorService.o ${OBJECTDIR}/_ext/819228780/Motion.o ${OBJECTDIR}/_ext/417556191/AD.o ${OBJECTDIR}/_ext/417556191/BOARD.o ${OBJECTDIR}/_ext/417556191/ES_CheckEvents.o ${OBJECTDIR}/_ext/417556191/ES_Framework.o ${OBJECTDIR}/_ext/417556191/ES_KeyboardInput.o ${OBJECTDIR}/_ext/417556191/ES_PostList.o ${OBJECTDIR}/_ext/417556191/ES_Queue.o ${OBJECTDIR}/_ext/417556191/ES_TattleTale.o ${OBJECTDIR}/_ext/417556191/ES_Timers.o ${OBJECTDIR}/_ext/417556191/IO_Ports.o ${OBJECTDIR}/_ext/417556191/RC_Servo.o ${OBJECTDIR}/_ext/417556191/pwm.o ${OBJECTDIR}/_ext/417556191/serial.o ${OBJECTDIR}/_ext/819228780/TrackwireService.o ${OBJECTDIR}/_ext/819228780/BumperService.o ${OBJECTDIR}/HSM.o ${OBJECTDIR}/FollowTapeSSM.o ${OBJECTDIR}/KillATM6SSM.o ${OBJECTDIR}/_ext/819228780/BeaconService.o ${OBJECTDIR}/BootupSSM.o ${OBJECTDIR}/HuntATM6SSM.o ${OBJECTDIR}/AvoidObstacleSSM.o ${OBJECTDIR}/HuntRenSSM.o ${OBJECTDIR}/ChargeBeaconSSM.o ${OBJECTDIR}/LiftControlFSM.o
 
 # Source Files
-SOURCEFILES=TemplateES_Main.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c ../shared/TrackwireService.c ../shared/BumperService.c HSM.c FollowTapeSSM.c LiftControlSSM.c KillATM6SSM.c ../shared/BeaconService.c BootupSSM.c HuntATM6SSM.c AvoidObstacleSSM.c HuntRenSSM.c ChargeBeaconSSM.c
+SOURCEFILES=TemplateES_Main.c ../shared/TapeSensorService.c ../shared/Motion.c ../CMPE118/src/AD.c ../CMPE118/src/BOARD.c ../CMPE118/src/ES_CheckEvents.c ../CMPE118/src/ES_Framework.c ../CMPE118/src/ES_KeyboardInput.c ../CMPE118/src/ES_PostList.c ../CMPE118/src/ES_Queue.c ../CMPE118/src/ES_TattleTale.c ../CMPE118/src/ES_Timers.c ../CMPE118/src/IO_Ports.c ../CMPE118/src/RC_Servo.c ../CMPE118/src/pwm.c ../CMPE118/src/serial.c ../shared/TrackwireService.c ../shared/BumperService.c HSM.c FollowTapeSSM.c KillATM6SSM.c ../shared/BeaconService.c BootupSSM.c HuntATM6SSM.c AvoidObstacleSSM.c HuntRenSSM.c ChargeBeaconSSM.c LiftControlFSM.c
 
 
 CFLAGS=
@@ -239,12 +239,6 @@ ${OBJECTDIR}/FollowTapeSSM.o: FollowTapeSSM.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/FollowTapeSSM.o 
 	@${FIXDEPS} "${OBJECTDIR}/FollowTapeSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/FollowTapeSSM.o.d" -o ${OBJECTDIR}/FollowTapeSSM.o FollowTapeSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/LiftControlSSM.o: LiftControlSSM.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/LiftControlSSM.o.d 
-	@${RM} ${OBJECTDIR}/LiftControlSSM.o 
-	@${FIXDEPS} "${OBJECTDIR}/LiftControlSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/LiftControlSSM.o.d" -o ${OBJECTDIR}/LiftControlSSM.o LiftControlSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
 ${OBJECTDIR}/KillATM6SSM.o: KillATM6SSM.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/KillATM6SSM.o.d 
@@ -286,6 +280,12 @@ ${OBJECTDIR}/ChargeBeaconSSM.o: ChargeBeaconSSM.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/ChargeBeaconSSM.o.d 
 	@${RM} ${OBJECTDIR}/ChargeBeaconSSM.o 
 	@${FIXDEPS} "${OBJECTDIR}/ChargeBeaconSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/ChargeBeaconSSM.o.d" -o ${OBJECTDIR}/ChargeBeaconSSM.o ChargeBeaconSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/LiftControlFSM.o: LiftControlFSM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LiftControlFSM.o.d 
+	@${RM} ${OBJECTDIR}/LiftControlFSM.o 
+	@${FIXDEPS} "${OBJECTDIR}/LiftControlFSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE) -g -D__DEBUG -D__MPLAB_DEBUGGER_SIMULATOR=1  -fframe-base-loclist  -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/LiftControlFSM.o.d" -o ${OBJECTDIR}/LiftControlFSM.o LiftControlFSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 else
 ${OBJECTDIR}/TemplateES_Main.o: TemplateES_Main.c  nbproject/Makefile-${CND_CONF}.mk
@@ -408,12 +408,6 @@ ${OBJECTDIR}/FollowTapeSSM.o: FollowTapeSSM.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/FollowTapeSSM.o 
 	@${FIXDEPS} "${OBJECTDIR}/FollowTapeSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/FollowTapeSSM.o.d" -o ${OBJECTDIR}/FollowTapeSSM.o FollowTapeSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
-${OBJECTDIR}/LiftControlSSM.o: LiftControlSSM.c  nbproject/Makefile-${CND_CONF}.mk
-	@${MKDIR} "${OBJECTDIR}" 
-	@${RM} ${OBJECTDIR}/LiftControlSSM.o.d 
-	@${RM} ${OBJECTDIR}/LiftControlSSM.o 
-	@${FIXDEPS} "${OBJECTDIR}/LiftControlSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/LiftControlSSM.o.d" -o ${OBJECTDIR}/LiftControlSSM.o LiftControlSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
-	
 ${OBJECTDIR}/KillATM6SSM.o: KillATM6SSM.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
 	@${RM} ${OBJECTDIR}/KillATM6SSM.o.d 
@@ -455,6 +449,12 @@ ${OBJECTDIR}/ChargeBeaconSSM.o: ChargeBeaconSSM.c  nbproject/Makefile-${CND_CONF
 	@${RM} ${OBJECTDIR}/ChargeBeaconSSM.o.d 
 	@${RM} ${OBJECTDIR}/ChargeBeaconSSM.o 
 	@${FIXDEPS} "${OBJECTDIR}/ChargeBeaconSSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/ChargeBeaconSSM.o.d" -o ${OBJECTDIR}/ChargeBeaconSSM.o ChargeBeaconSSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
+	
+${OBJECTDIR}/LiftControlFSM.o: LiftControlFSM.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/LiftControlFSM.o.d 
+	@${RM} ${OBJECTDIR}/LiftControlFSM.o 
+	@${FIXDEPS} "${OBJECTDIR}/LiftControlFSM.o.d" $(SILENT) -rsi ${MP_CC_DIR}../  -c ${MP_CC}  $(MP_EXTRA_CC_PRE)  -g -x c -c -mprocessor=$(MP_PROCESSOR_OPTION)  -I"." -I"../shared" -I"../CMPE118/include" -MMD -MF "${OBJECTDIR}/LiftControlFSM.o.d" -o ${OBJECTDIR}/LiftControlFSM.o LiftControlFSM.c    -DXPRJ_default=$(CND_CONF)  -legacy-libc  $(COMPARISON_BUILD) 
 	
 endif
 

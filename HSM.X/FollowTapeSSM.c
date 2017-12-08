@@ -226,11 +226,21 @@ ES_Event RunFollowTapeSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_tank_left();
+                    ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
                     break;
 
                 case TAPE_SENSOR_TRIPPED:
                     if (ThisEvent.EventParam & TAPE_1_TRIPPED) {
                         nextState = AdjustRight;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                    
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                        motion_move(FORWARD, 50);
+                        nextState = FindTape;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }

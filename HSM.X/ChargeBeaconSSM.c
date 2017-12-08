@@ -43,10 +43,12 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define FRUSTRATION_TICKS  6000
+#define FRUSTRATION_TICKS  8000
 
-#define CRAWL_TICKS 500
-#define CHARGE_REVERSE_TICKS 300
+#define BEACON_LOST_TICKS 750
+
+#define CRAWL_TICKS 400
+#define CHARGE_REVERSE_TICKS 500
 
 
 /*******************************************************************************
@@ -91,6 +93,7 @@ static const char *StateNames[] = {
 static ChargeBeaconSSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
 static ES_Event NewEvent; // Used for passing up events
+
 
 
 
@@ -161,6 +164,10 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
                     ES_Timer_InitTimer(FRUSTRATION_TIMER, FRUSTRATION_TICKS);
                     break;
 
+                case ES_EXIT:
+                    ES_Timer_StopTimer(FRUSTRATION_TIMER);
+                    break;
+
                 case BEACON_FOUND:
                     nextState = ChargeRight;
                     makeTransition = TRUE;
@@ -187,12 +194,21 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_bank_left(FORWARD);
+                    ES_Timer_InitTimer(FRUSTRATION_TIMER, BEACON_LOST_TICKS);
                     break;
 
-                case BEACON_LOST:
+                case BEACON_FOUND:
                     nextState = ChargeRight;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
+                    break;
+
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                        nextState = BankToTape;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
                     break;
 
                 case BUMPER_PRESSED:
@@ -235,7 +251,7 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
         case ChargeReverse:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    motion_move(REVERSE, 50);
+                    motion_move(REVERSE, 70);
                     ES_Timer_InitTimer(DRIVE_TIMER, CHARGE_REVERSE_TICKS);
                     break;
 
@@ -245,7 +261,11 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
-
+                    break;
+                    
+                case ES_NO_EVENT:
+                default:
+                    break;
             }
             break;
 
@@ -295,17 +315,18 @@ ES_Event RunChargeBeaconSSM(ES_Event ThisEvent) {
         case BankToTape:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    motion_bank_right(FORWARD);
+                    //                    motion_bank_right(FORWARD);
+                    motion_move(FORWARD, 50);
                     break;
 
-                case TAPE_SENSOR_TRIPPED:
-//                    if (ThisEvent.EventParam & (TAPE_0_TRIPPED || TAPE_2_TRIPPED)) {
-                        if (check_tape_states(TAPE_0) && check_tape_states(TAPE_2)) {
-                            nextState = AlignBorderTape;
-                            makeTransition = TRUE;
-                            ThisEvent.EventType = ES_NO_EVENT;
-                        }
-//                    }
+                case TAPE_SENSOR_UNTRIPPED:
+                    //                    if (ThisEvent.EventParam & (TAPE_0_TRIPPED || TAPE_2_TRIPPED)) {
+                    if (ThisEvent.EventParam & TAPE_1_UNTRIPPED) {
+                        nextState = AlignBorderTape;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    //                    }
                     break;
 
 

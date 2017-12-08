@@ -45,7 +45,7 @@
 
 #define FRUSTRATION_TICKS  2000
 
-#define ACTUATE_DOOR_TICKS 265
+#define ACTUATE_DOOR_TICKS 210
 #define ACTUATE_BRIDGE_TICKS 1000
 
 
@@ -155,7 +155,7 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                     motion_open_bridge_door();
                     ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_DOOR_TICKS);
                     break;
-                    
+
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == SERVO_TIMER) {
                         nextState = CloseDoor;
@@ -163,7 +163,7 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                    
+
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;
@@ -174,17 +174,13 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_close_bridge_door();
-                    ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_DOOR_TICKS);
+                    nextState = LowerBridge;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
-                    
-                case ES_TIMEOUT:
-                    if (ThisEvent.EventParam == SERVO_TIMER) {
-                        nextState = LowerBridge;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
-                    }
-                    break;
-                    
+
+
+
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;
@@ -197,19 +193,19 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                     motion_lower_bridge();
                     ES_Timer_InitTimer(SERVO_TIMER, ACTUATE_BRIDGE_TICKS);
                     break;
-                    
+
                 case TRACKWIRE_LOST:
                     nextState = RaiseBridge;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
-                    
+
                 case TRACKWIRE_FOUND:
                     nextState = RaiseBridge;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
-                    
+
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == SERVO_TIMER) {
                         nextState = ConfirmKill;
@@ -243,7 +239,7 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
-                    
+
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;
@@ -260,7 +256,7 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
-                    
+
                 case TAPE_SENSOR_TRIPPED:
                     if (ThisEvent.EventParam & TAPE_2_TRIPPED) {
                         motion_stop();
@@ -268,7 +264,7 @@ ES_Event RunKillATM6SSM(ES_Event ThisEvent) {
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
-                    
+
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;

@@ -34,7 +34,7 @@
 #include <stdio.h>
 
 #include "HSM.h"
-#include "LiftControlSSM.h"
+#include "LiftControlFSM.h"
 
 #include "BumperService.h"
 #include "Motion.h"
@@ -45,8 +45,8 @@
  ******************************************************************************/
 
 #define INIT_TICKS 100
-#define ORIGIN_TO_BEACON_DETECTION_TICKS 13000
-#define BEACON_DETECTION_TO_REN_TICKS 11500
+#define ORIGIN_TO_BEACON_DETECTION_TICKS 10000
+#define BEACON_DETECTION_TO_REN_TICKS 13000
 
 
 /*******************************************************************************
@@ -73,7 +73,7 @@ typedef enum {
     FindOrigin,
     MoveToBeaconDetection,
     MoveToRen,
-} LiftControlSSMState_t;
+} LiftControlFSMState_t;
 
 static const char *StateNames[] = {
 	"InitPState",
@@ -86,7 +86,7 @@ static const char *StateNames[] = {
 };
 
 
-static LiftControlSSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
+static LiftControlFSMState_t CurrentState = InitPState; // <- change enum name to match ENUM
 static uint8_t MyPriority;
 
 
@@ -95,7 +95,7 @@ static uint8_t MyPriority;
  ******************************************************************************/
 
 /**
- * @Function InitFollowTapeSSM(void)
+ * @Function InitFollowTapeFSM(void)
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
  *        execution. It will post an ES_INIT event to the appropriate event
@@ -103,21 +103,35 @@ static uint8_t MyPriority;
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitLiftControlSSM(void) {
-    ES_Event returnEvent;
+uint8_t InitLiftControlFSM(uint8_t Priority) {
+    
+    MyPriority = Priority;
     // put us into the Initial PseudoState
     CurrentState = InitPState;
-    returnEvent = RunLiftControlSSM(INIT_EVENT);
     // post the initial transition event
-    if (returnEvent.EventType == ES_NO_EVENT) {
+    if (ES_PostToService(MyPriority, INIT_EVENT) == TRUE) {
         return TRUE;
     } else {
         return FALSE;
     }
+   
 }
 
 /**
- * @Function RunFollowTapeSSM(ES_Event ThisEvent)
+ * @Function PostLiftControlFSM(ES_Event ThisEvent)
+ * @param ThisEvent - the event (type and param) to be posted to queue
+ * @return TRUE or FALSE
+ * @brief This function is a wrapper to the queue posting function, and its name
+ *        will be used inside ES_Configure to point to which queue events should
+ *        be posted to. Remember to rename to something appropriate.
+ *        Returns TRUE if successful, FALSE otherwise
+ * @author J. Edward Carryer, 2011.10.23 19:25 */
+uint8_t PostLiftControlFSM(ES_Event ThisEvent) {
+    return ES_PostToService(MyPriority, ThisEvent);
+}
+
+/**
+ * @Function RunFollowTapeFSM(ES_Event ThisEvent)
  * @param ThisEvent - the event (type and param) to be responded.
  * @return Event - return event (type and param), in general should be ES_NO_EVENT
  * @brief This function is where you implement the whole of the flat state machine,
@@ -128,9 +142,9 @@ uint8_t InitLiftControlSSM(void) {
  * @note Remember to rename to something appropriate.
  *       Returns ES_NO_EVENT if the event have been "consumed."
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
+ES_Event RunLiftControlFSM(ES_Event ThisEvent) {
     uint8_t makeTransition = FALSE; // use to flag transition
-    LiftControlSSMState_t nextState;
+    LiftControlFSMState_t nextState;
 
     ES_Tattle(); // trace call stack
 
@@ -141,9 +155,9 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                 // this is where you would put any actions associated with the
                 // transition from the initial pseudo-state into the actual
                 // initial state
-                ES_Timer_InitTimer(FRUSTRATION_TIMER, INIT_TICKS);
+                ES_Timer_InitTimer(LIFT_TIMER, INIT_TICKS);
             } else if (ThisEvent.EventType == ES_TIMEOUT) {
-                if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                if (ThisEvent.EventParam == LIFT_TIMER) {
                     // now put the machine into the actual initial state
                     if (check_bumper_states(BUMPER_4)) {
                         nextState = Origin;
@@ -164,6 +178,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                 case ES_ENTRY:
                     motion_lower_lift();
                     break;
+                    
                 case BUMPER_PRESSED:
                     if (ThisEvent.EventParam & BUMPER_4_PRESSED) {
                         nextState = Origin;
@@ -171,6 +186,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                    
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
                     break;
@@ -203,6 +219,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     ES_Timer_InitTimer(LIFT_TIMER, ORIGIN_TO_BEACON_DETECTION_TICKS);
                     motion_raise_lift();
                     break;
+                    
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == LIFT_TIMER) {
                         nextState = BeaconDetection;
@@ -223,6 +240,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     ES_Timer_InitTimer(LIFT_TIMER, BEACON_DETECTION_TO_REN_TICKS);
                     motion_raise_lift();
                     break;
+                    
                 case ES_TIMEOUT:
                     if (ThisEvent.EventParam == LIFT_TIMER) {
                         nextState = Ren;
@@ -255,6 +273,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     nextState = FindOrigin;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
+                    break;
 
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
@@ -274,6 +293,7 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
                     nextState = FindOrigin;
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
+                    break;
 
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
@@ -286,9 +306,9 @@ ES_Event RunLiftControlSSM(ES_Event ThisEvent) {
     } // end switch on Current State
     if (makeTransition == TRUE) { // making a state transition, send EXIT and ENTRY
         // recursively call the current state with an exit event
-        RunLiftControlSSM(EXIT_EVENT);
+        RunLiftControlFSM(EXIT_EVENT);
         CurrentState = nextState;
-        RunLiftControlSSM(ENTRY_EVENT);
+        RunLiftControlFSM(ENTRY_EVENT);
     }
     ES_Tail(); // trace call stack end
     return ThisEvent;

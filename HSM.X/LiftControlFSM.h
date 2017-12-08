@@ -15,8 +15,8 @@
  * Modified by MaxL on 8/11/2014
  */
 
-#ifndef LIFT_CONTROL_SSM_H
-#define LIFT_CONTROL_SSM_H 
+#ifndef LIFT_CONTROL_FSM_H
+#define LIFT_CONTROL_FSM_H 
 
 
 /*******************************************************************************
@@ -41,7 +41,7 @@
  ******************************************************************************/
 
 /**
- * @Function InitLiftControlSSM(void)
+ * @Function InitLiftControlFSM(void)
  * @param Priority - internal variable to track which event queue to use
  * @return TRUE or FALSE
  * @brief This will get called by the framework at the beginning of the code
@@ -50,7 +50,18 @@
  *        to rename this to something appropriate.
  *        Returns TRUE if successful, FALSE otherwise
  * @author J. Edward Carryer, 2011.10.23 19:25 */
-uint8_t InitLiftControlSSM(void);
+uint8_t InitLiftControlFSM(uint8_t Priority);
+
+/**
+ * @Function PostLiftControlFSM(ES_Event ThisEvent)
+ * @param ThisEvent - the event (type and param) to be posted to queue
+ * @return TRUE or FALSE
+ * @brief This function is a wrapper to the queue posting function, and its name
+ *        will be used inside ES_Configure to point to which queue events should
+ *        be posted to. Remember to rename to something appropriate.
+ *        Returns TRUE if successful, FALSE otherwise
+ * @author J. Edward Carryer, 2011.10.23 19:25 */
+uint8_t PostLiftControlFSM(ES_Event ThisEvent);
 
 
 /**
@@ -68,7 +79,7 @@ uint8_t InitLiftControlSSM(void);
  *       not consumed as these need to pass pack to the higher level state machine.
  * @author J. Edward Carryer, 2011.10.23 19:25
  * @author Gabriel H Elkaim, 2011.10.23 19:25 */
-ES_Event RunLiftControlSSM(ES_Event ThisEvent);
+ES_Event RunLiftControlFSM(ES_Event ThisEvent);
 
 #endif /* LIFT_CONTROL_SSM_H */
 

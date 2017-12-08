@@ -37,7 +37,7 @@
 #include "HuntATM6SSM.h"
 
 #include "KillATM6SSM.h"
-#include "LiftControlSSM.h"
+#include "LiftControlFSM.h"
 #include "FollowTapeSSM.h"
 #include "AvoidObstacleSSM.h"
 #include "ChargeBeaconSSM.h"
@@ -74,7 +74,7 @@
 
 typedef enum {
     InitPState,
-            ChargeBeacon,
+    ChargeBeacon,
     FollowTape,
     AvoidObstacle,
     KillATM6,
@@ -166,11 +166,12 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
             ThisEvent = RunChargeBeaconSSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case BEACON_CHARGE_COMPLETE:
-                        motion_move(FORWARD, 40);
-                        InitFollowTapeSSM();
-                        nextState = FollowTape;
-                        makeTransition = TRUE;
-                        ThisEvent.EventType = ES_NO_EVENT;
+                    InitFollowTapeSSM();
+                    motion_move(FORWARD, 40);
+
+                    nextState = FollowTape;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
             }
             break;
@@ -210,6 +211,7 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case OBSTACLE_AVOIDED:
                     nextState = FollowTape;
+                    InitFollowTapeSSM();
                     motion_move(FORWARD, 40);
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
@@ -231,7 +233,10 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
                         NewEvent.EventType = ALL_ATM6_DESTROYED;
                         PostHSM(NewEvent);
                     } else {
-                        nextState = Jig;
+                        nextState = FollowTape;
+                        if (check_tape_states(TAPE_1)) {
+                            InitFollowTapeSSM();
+                        }
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
@@ -259,7 +264,7 @@ ES_Event RunHuntATM6SSM(ES_Event ThisEvent) {
                     if (ThisEvent.EventParam & TAPE_1_UNTRIPPED && check_tape_states(TAPE_0)) {
                         nextState = FollowTape;
                         InitFollowTapeSSM();
-                        motion_move(FORWARD, 35);
+                        motion_bank_left(FORWARD);
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }

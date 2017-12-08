@@ -39,6 +39,7 @@
 #include "FollowTapeSSM.h"
 #include "AvoidObstacleSSM.h"
 #include "ChargeBeaconSSM.h"
+#include "LiftControlFSM.h"
 
 #include "Motion.h"
 
@@ -53,6 +54,8 @@
 #define TINY_TURN_TICKS 50
 #define TINY_REVERSE_TICKS 100
 #define LINEUP_REVERSE_TICKS 100
+
+#define REN_LINEUP_FRUSTRATION_TICKS 7000
 
 
 /*******************************************************************************
@@ -77,8 +80,9 @@ typedef enum {
     LineupReverse,
     TankRight,
     Lineup,
+    Backup,
+    Ram,
     OpenRenDoor,
-    ConfirmKill,
     VictoryDance,
 } HuntRenSSMState_t;
 
@@ -90,8 +94,9 @@ static const char *StateNames[] = {
 	"LineupReverse",
 	"TankRight",
 	"Lineup",
+	"Backup",
+	"Ram",
 	"OpenRenDoor",
-	"ConfirmKill",
 	"VictoryDance",
 };
 
@@ -155,11 +160,11 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                 // initial state
 
                 // now put the machine into the actual initial state
+                NewEvent.EventType = MOTION_LIFT_REN;
+                PostLiftControlFSM(NewEvent);
+                InitChargeBeaconSSM();
                 nextState = ChargeBeacon;
                 makeTransition = TRUE;
-                InitChargeBeaconSSM();
-                NewEvent.EventType = MOTION_LIFT_REN;
-                PostHSM(NewEvent);
                 ThisEvent.EventType = ES_NO_EVENT;
             }
             break;
@@ -178,7 +183,7 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                     break;
             }
             break;
-        
+
 
         case FollowTape:
             // run sub-state machine for this state
@@ -204,7 +209,7 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
                     break;
             }
             break;
-            
+
         case LineupReverse:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
@@ -251,21 +256,32 @@ ES_Event RunHuntRenSSM(ES_Event ThisEvent) {
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     motion_pivot_left(FORWARD, MAX_SPEED);
+                    ES_Timer_InitTimer(FRUSTRATION_TIMER, REN_LINEUP_FRUSTRATION_TICKS);
                     break;
 
                 case BUMPER_PRESSED:
-                    if (ThisEvent.EventParam & BUMPER_2_PRESSED ) {
+                    if (ThisEvent.EventParam & BUMPER_2_PRESSED) {
                         nextState = OpenRenDoor;
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
                     break;
+                    
+                case ES_TIMEOUT:
+                    if (ThisEvent.EventParam == FRUSTRATION_TIMER) {
+                        nextState = OpenRenDoor;
+                        makeTransition = TRUE;
+                        ThisEvent.EventType = ES_NO_EVENT;
+                    }
+                    break;
+                    
 
                 case ES_NO_EVENT:
                 default:
                     break;
             }
             break;
+
 
         case AvoidObstacle:
             // run sub-state machine for this state

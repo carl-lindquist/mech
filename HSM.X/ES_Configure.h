@@ -118,7 +118,7 @@ static const char *EventNames[] = {
 #define TIMER3_RESP_FUNC PostBeaconService
 #define TIMER4_RESP_FUNC PostHSM
 #define TIMER5_RESP_FUNC PostHSM
-#define TIMER6_RESP_FUNC PostHSM
+#define TIMER6_RESP_FUNC PostLiftControlFSM
 #define TIMER7_RESP_FUNC PostHSM
 #define TIMER8_RESP_FUNC TIMER_UNUSED
 #define TIMER9_RESP_FUNC TIMER_UNUSED
@@ -155,7 +155,7 @@ static const char *EventNames[] = {
 /****************************************************************************/
 // This macro determines that nuber of services that are *actually* used in
 // a particular application. It will vary in value from 1 to MAX_NUM_SERVICES
-#define NUM_SERVICES 6
+#define NUM_SERVICES 7
 /****************************************************************************/
 // These are the definitions for Service 0, the lowest priority service
 // every Events and Services application must have a Service 0. Further 
@@ -240,11 +240,11 @@ static const char *EventNames[] = {
 // These are the definitions for Service 6
 #if NUM_SERVICES > 6
 // the header file with the public fuction prototypes
-#define SERV_6_HEADER "TestService.h"
+#define SERV_6_HEADER "LiftControlFSM.h"
 // the name of the Init function
-#define SERV_6_INIT TestServiceInit
+#define SERV_6_INIT InitLiftControlFSM
 // the name of the run function
-#define SERV_6_RUN TestServiceRun
+#define SERV_6_RUN RunLiftControlFSM
 // How big should this services Queue be?
 #define SERV_6_QUEUE_SIZE 3
 #endif
@@ -276,7 +276,7 @@ static const char *EventNames[] = {
 // services are on that distribution list.
 #define NUM_DIST_LISTS 1
 #if NUM_DIST_LISTS > 0 
-#define DIST_LIST0 PostHSM
+#define DIST_LIST0 PostHSM, PostLiftControlFSM
 #endif
 #if NUM_DIST_LISTS > 1 
 #define DIST_LIST1 PostTemplateFSM

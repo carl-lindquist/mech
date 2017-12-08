@@ -36,7 +36,7 @@
 
 #include "BootupSSM.h"
 #include "HuntATM6SSM.h"
-#include "LiftControlSSM.h"
+#include "LiftControlFSM.h"
 #include "HuntRenSSM.h"
 #include "Motion.h"
 
@@ -180,17 +180,17 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             // run sub-state machine for this state
             //NOTE: the SubState Machine runs and responds to events before anything in the this
             //state machine does
-            ThisEvent = RunLiftControlSSM(ThisEvent);
             ThisEvent = RunHuntATM6SSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
                     NewEvent.EventType = MOTION_LIFT_BEACON_DETECTION;
-                    PostHSM(NewEvent);
+                    PostLiftControlFSM(NewEvent);
                     InitHuntATM6SSM();
                     break;
 
                 case ALL_ATM6_DESTROYED:
                     nextState = HuntRen;
+                    InitHuntRenSSM();
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
@@ -202,15 +202,8 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             break;
 
         case HuntRen:
-            ThisEvent = RunLiftControlSSM(ThisEvent);
             ThisEvent = RunHuntRenSSM(ThisEvent);
             switch (ThisEvent.EventType) {
-
-                case ES_ENTRY:
-                    InitHuntRenSSM();
-                    NewEvent.EventType = MOTION_LIFT_REN;
-                    PostHSM(NewEvent);
-                    break;
 
                 case ES_NO_EVENT:
                 default:

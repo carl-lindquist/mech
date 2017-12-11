@@ -56,7 +56,7 @@
 #define LINEUP_REVERSE_TICKS 75
 
 #define REN_LINEUP_FRUSTRATION_TICKS 7000
-#define LOWER_LIFT_FRUSTRATION_TICKS 5000
+#define LOWER_LIFT_FRUSTRATION_TICKS 4000
 
 
 /*******************************************************************************

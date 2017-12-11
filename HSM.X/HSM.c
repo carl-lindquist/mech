@@ -183,8 +183,8 @@ ES_Event RunHSM(ES_Event ThisEvent) {
             ThisEvent = RunHuntATM6SSM(ThisEvent);
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    NewEvent.EventType = MOTION_LIFT_BEACON_DETECTION;
-                    PostLiftControlFSM(NewEvent);
+//                    NewEvent.EventType = MOTION_LIFT_BEACON_DETECTION;
+//                    PostLiftControlFSM(NewEvent);
                     InitHuntATM6SSM();
                     break;
 

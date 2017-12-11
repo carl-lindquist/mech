@@ -43,7 +43,7 @@
  * MODULE #DEFINES                                                             *
  ******************************************************************************/
 
-#define FRUSTRATION_TICKS  8000
+#define FRUSTRATION_TICKS  7000
 
 #define BEACON_LOST_TICKS 1000
 

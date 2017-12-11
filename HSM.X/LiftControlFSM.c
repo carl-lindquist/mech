@@ -46,6 +46,7 @@
 
 #define INIT_TICKS 100
 #define ORIGIN_TO_BEACON_DETECTION_TICKS 10000
+#define ORIGIN_T0_REN_TICKS 25000
 #define BEACON_DETECTION_TO_REN_TICKS 30000
 
 
@@ -206,6 +207,12 @@ ES_Event RunLiftControlFSM(ES_Event ThisEvent) {
                     makeTransition = TRUE;
                     ThisEvent.EventType = ES_NO_EVENT;
                     break;
+                    
+                case MOTION_LIFT_REN:
+                    nextState = MoveToRen;
+                    makeTransition = TRUE;
+                    ThisEvent.EventType = ES_NO_EVENT;
+                    break;
 
                 case ES_NO_EVENT:
                 default: // all unhandled events pass the event back up to the next level
@@ -237,7 +244,7 @@ ES_Event RunLiftControlFSM(ES_Event ThisEvent) {
         case MoveToRen:
             switch (ThisEvent.EventType) {
                 case ES_ENTRY:
-                    ES_Timer_InitTimer(LIFT_TIMER, BEACON_DETECTION_TO_REN_TICKS);
+                    ES_Timer_InitTimer(LIFT_TIMER, ORIGIN_T0_REN_TICKS);
                     motion_raise_lift();
                     break;
                     
@@ -247,6 +254,11 @@ ES_Event RunLiftControlFSM(ES_Event ThisEvent) {
                         makeTransition = TRUE;
                         ThisEvent.EventType = ES_NO_EVENT;
                     }
+                    break;
+                    
+                case MOTION_LIFT_ORIGIN:
+                    PostLiftControlFSM(ThisEvent);
+                    ThisEvent.EventType = ES_NO_EVENT;
                     break;
 
                 case ES_NO_EVENT:
